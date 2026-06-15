@@ -79,6 +79,12 @@
         border: 1px solid var(--border);
         box-shadow: var(--shadow-soft);
       }
+      .glass-panel {
+        background: var(--panel);
+        backdrop-filter: blur(18px);
+        border: 1px solid var(--border);
+        box-shadow: var(--shadow-soft);
+      }
       .panel-solid {
         background: var(--panel-solid);
         border: 1px solid var(--border);
@@ -558,23 +564,25 @@
       </div>
 
       <div class="my-auto text-center space-y-6 max-w-2xl mx-auto px-4">
-        <div class="inline-flex items-center space-x-2 px-3 py-1.5 rounded-full text-xs font-semibold code-font panel-solid text-[var(--blue)] shadow-sm">
-          <span class="flex h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></span>
-          <span>Sistem Interaktif Siap Dimainkan</span>
-        </div>
-        <h1 class="text-4xl md:text-6xl font-extrabold font-display tracking-tight">MPI Playground<br /><span class="text-gradient">Perangkat Digital</span></h1>
-        <p class="text-sm md:text-base text-[var(--text-muted)]">Mari menjelajah ragam bentuk komputer dengan sensasi taktil interaktif. Urutkan dimensi gadget, pilah pintu transmisi data, dan tantang temanmu di arena layar sentuh IFP!</p>
-        <div class="max-w-xs mx-auto pt-2 space-y-2">
-          <button onclick="changeScreen('screen-menu')" class="w-full bg-gradient-to-r from-[var(--blue)] to-[var(--purple)] text-white font-extrabold font-display text-xl py-4 rounded-2xl shadow-xl transform hover:scale-105 transition-all">
+        <h1 class="text-4xl sm:text-6xl font-black tracking-tight font-display text-gradient leading-none">
+          MPI Playground <br /><span class="text-slate-800 dark:text-white">Sekolah Dasar</span>
+        </h1>
+        <p class="text-xs sm:text-base text-[var(--text-muted)] max-w-md mx-auto leading-relaxed">
+          Platform interaktif sensorik-taktil untuk mengenali hardware komputer, merawat gadget harian, serta kompetensi digital dasar anak usia sekolah.
+        </p>
+        <div class="pt-2 flex flex-col sm:flex-row justify-center items-center gap-3">
+          <button onclick="enterApplication()" class="w-full sm:w-auto bg-gradient-to-r from-blue-600 via-purple-600 to-green-500 text-white font-extrabold font-display text-lg px-8 py-4 rounded-2xl shadow-xl hover:scale-[1.03] transition-all touch-none">
             Mulai Petualangan 🎮
           </button>
-          <p class="text-[10px] text-[var(--text-muted)] code-font">Tap 🎵 di kanan atas untuk musik latar · 📺 untuk layar penuh</p>
+          <button onclick="openModal('leaderboard-modal')" class="w-full sm:w-auto border border-yellow-400 text-yellow-500 font-bold px-5 py-3.5 rounded-2xl text-xs flex items-center justify-center gap-1.5">
+            🏆 Skor Tertinggi
+          </button>
         </div>
       </div>
 
-      <footer class="w-full text-center text-[10px] text-[var(--text-muted)]">
-        <p>&copy; 2026 MPI Playground • Developed by Galih Ramandha Rizki, S.Kom</p>
-      </footer>
+      <div class="w-full text-center py-2 text-[10px] text-[var(--text-muted)] font-mono">
+        Made with ❤️ for Elementary Digital Literacy • GAS Sync Enabled
+      </div>
     </section>
 
     <section id="screen-menu" class="app-screen smooth-transition p-3 sm:p-4 opacity-0 pointer-events-none translate-x-full">
@@ -592,41 +600,47 @@
 
         <div onclick="openMateriSubmenu()" class="card-game-select glass-panel p-5 rounded-2xl border-2 hover:border-[var(--purple)] cursor-pointer text-center flex flex-col justify-between h-64">
           <div class="icon-3d-wrapper mx-auto"><div class="icon-3d-base text-purple-500 bg-purple-50/50"><i class="ri-book-open-line"></i></div></div>
-          <div><h3 class="text-base font-bold font-display">B. Materi</h3><p class="text-[10px] text-[var(--text-muted)] mt-1">Eksplorasi Audio, Visual, Video & Kinestetik.</p></div>
-          <div class="text-xs font-mono font-bold text-[var(--purple)]">Pilih Topik →</div>
+          <div><h3 class="text-base font-bold font-display">B. Materi</h3><p class="text-[10px] text-[var(--text-muted)] mt-1">Modul multisensori: Teks, Suara, dan Video.</p></div>
+          <div class="text-xs font-mono font-bold text-[var(--purple)]">Mulai Belajar →</div>
         </div>
 
         <div onclick="openGameSelection()" class="card-game-select glass-panel p-5 rounded-2xl border-2 hover:border-[var(--green)] cursor-pointer text-center flex flex-col justify-between h-64">
-          <div class="icon-3d-wrapper mx-auto"><div class="icon-3d-base text-emerald-500 bg-emerald-50/50"><i class="ri-gamepad-line"></i></div></div>
-          <div><h3 class="text-base font-bold font-display">C. Game</h3><p class="text-[10px] text-[var(--text-muted)] mt-1">Uji aksi taktil mandiri atau duel layar IFP.</p></div>
-          <div class="text-xs font-mono font-bold text-[var(--green)]">Mainkan →</div>
+          <div class="icon-3d-wrapper mx-auto"><div class="icon-3d-base text-green-500 bg-green-50/50"><i class="ri-gamepad-line"></i></div></div>
+          <div><h3 class="text-base font-bold font-display">C. Game Arena</h3><p class="text-[10px] text-[var(--text-muted)] mt-1">Tebak perangkat input-output (Solo & Duel).</p></div>
+          <div class="text-xs font-mono font-bold text-[var(--green)]">Main Game →</div>
         </div>
 
-        <div onclick="changeScreen('screen-kuis-hub')" class="card-game-select glass-panel p-5 rounded-2xl border-2 hover:border-[var(--yellow)] cursor-pointer text-center flex flex-col justify-between h-64">
-          <div class="icon-3d-wrapper mx-auto"><div class="icon-3d-base text-amber-500 bg-amber-50/50"><i class="ri-file-list-3-line"></i></div></div>
-          <div><h3 class="text-base font-bold font-display">D. Kuis</h3><p class="text-[10px] text-[var(--text-muted)] mt-1">Evaluasi & kuis interaktif embed platform.</p></div>
-          <div class="text-xs font-mono font-bold text-[var(--yellow)]">Uji Nyali →</div>
+        <div onclick="changeScreen('screen-kuis-hub')" class="card-game-select glass-panel p-5 rounded-2xl border-2 hover:border-[var(--coral)] cursor-pointer text-center flex flex-col justify-between h-64">
+          <div class="icon-3d-wrapper mx-auto"><div class="icon-3d-base text-coral-500 bg-coral-50/50"><i class="ri-fire-line"></i></div></div>
+          <div><h3 class="text-base font-bold font-display">D. Evaluasi</h3><p class="text-[10px] text-[var(--text-muted)] mt-1">Kuis pemahaman berhadiah sertifikat prestasi.</p></div>
+          <div class="text-xs font-mono font-bold text-[var(--coral)]">Ikuti Ujian →</div>
         </div>
       </div>
 
-      <div class="w-full flex items-center justify-between max-w-5xl mx-auto px-4">
-        <div class="text-xs font-bold text-purple-600 font-display">Sistem Buatan: Galih Ramandha Rizki, S.Kom</div>
-        <button onclick="openModal('leaderboard-modal'); switchLeaderboardTab('local')" class="flex items-center gap-1.5 text-xs font-bold text-amber-500 hover:text-amber-400 transition-colors">
-          <i class="fa-solid fa-trophy"></i> Papan Skor
-        </button>
+      <div class="w-full flex justify-center items-center gap-4 max-w-md mx-auto">
+        <div class="text-right"><div class="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-wider">Total Skor Kamu</div><div class="text-base font-black text-gradient font-display" id="session-score-display">0 Poin</div></div>
+        <div class="w-px h-6 bg-[var(--border)]"></div>
+        <div class="flex-1">
+          <div class="flex justify-between text-[9px] font-bold text-[var(--text-muted)] mb-1"><span>Materi Selesai</span><span id="txt-progress-pct">0%</span></div>
+          <div class="w-full bg-gray-200 dark:bg-gray-700 h-1.5 rounded-full overflow-hidden"><div id="progress-bar-main" class="bg-gradient-to-r from-blue-500 to-purple-500 h-full w-0 transition-all duration-500"></div></div>
+        </div>
       </div>
     </section>
 
     <section id="screen-kompetensi" class="app-screen smooth-transition p-3 sm:p-4 opacity-0 pointer-events-none translate-x-full">
       <div class="w-full flex items-center justify-between">
-        <button onclick="changeScreen('screen-menu')" class="smooth-transition px-4 py-2 rounded-xl panel-solid text-xs font-bold flex items-center gap-2"><i class="fa-solid fa-chevron-left"></i> Menu Utama</button>
-        <h2 class="text-xl font-extrabold font-display text-gradient pr-24">Kompetensi Belajar CP & ATP 🎯</h2>
+        <button onclick="changeScreen('screen-menu')" class="smooth-transition px-4 py-2 rounded-xl panel-solid text-xs font-bold flex items-center gap-2"><i class="fa-solid fa-chevron-left"></i> Menu</button>
+        <h2 class="text-xl font-extrabold font-display text-gradient pr-24">Target & Capaian Belajar 🎯</h2>
       </div>
-      <div class="my-auto max-w-2xl w-full mx-auto space-y-4 overflow-y-auto">
+
+      <div class="my-auto max-w-3xl w-full mx-auto space-y-3 overflow-y-auto max-h-[70vh] px-2">
         <div class="glass-panel p-5 rounded-2xl border-l-4 border-blue-500">
-          <h4 class="font-bold text-blue-500 text-sm uppercase font-mono mb-2">🎯 Capaian Pembelajaran (CP)</h4>
-          <p class="text-xs sm:text-sm leading-relaxed" id="cp-text">Peserta didik mampu mengenali berbagai perangkat keras komputer di sekitarnya, mengidentifikasi perbedaan ukuran gawai, membedakan fungsi komponen input dan output data, serta mendemonstrasikan kebiasaan merawat gawai secara aman.</p>
+          <h4 class="font-bold text-blue-500 text-sm uppercase font-mono mb-2">📌 Capaian Pembelajaran (CP)</h4>
+          <p class="text-xs sm:text-sm leading-relaxed text-[var(--text-muted)] font-medium" id="cp-text">
+            Pada akhir fase ini, siswa mampu mengenal bagian-bagian dasar gawai komputer (piranti Input dan Output), merawat kebersihan ragam komponen digital secara aman, serta mematuhi etika dasar penggunaan gawai di lingkup sekolah.
+          </p>
         </div>
+
         <div class="glass-panel p-5 rounded-2xl border-l-4 border-purple-500">
           <h4 class="font-bold text-purple-500 text-sm uppercase font-mono mb-2">📌 Tujuan Pembelajaran (TP)</h4>
           <ul class="text-xs sm:text-sm space-y-1.5 list-disc pl-4">
@@ -635,6 +649,7 @@
             <li>Memilih aksi protektif higienis harian untuk menjaga keawetan piranti keras.</li>
           </ul>
         </div>
+
         <div class="glass-panel p-5 rounded-2xl border-l-4 border-green-500">
           <h4 class="font-bold text-green-500 text-sm uppercase font-mono mb-2">📊 Indikator Ketercapaian</h4>
           <div class="grid grid-cols-3 gap-3 mt-2">
@@ -652,47 +667,32 @@
             </div>
           </div>
         </div>
-
-        <div class="glass-panel p-5 rounded-2xl border-l-4 border-amber-500">
-          <div class="flex items-center justify-between mb-3">
-            <h4 class="font-bold text-amber-500 text-sm uppercase font-mono">🚀 Progres Eksplorasi Materi</h4>
-            <div class="relative w-12 h-12">
-              <svg viewBox="0 0 44 44" class="w-12 h-12">
-                <circle class="progress-ring-bg" cx="22" cy="22" r="18" fill="none" stroke-width="4"></circle>
-                <circle id="progress-ring-fg" class="progress-ring-fg" cx="22" cy="22" r="18" fill="none" stroke-width="4" stroke-dasharray="113" stroke-dashoffset="113"></circle>
-              </svg>
-              <span id="progress-ring-text" class="absolute inset-0 flex items-center justify-center text-[10px] font-black font-display">0%</span>
-            </div>
-          </div>
-          <div class="space-y-2" id="progress-step-list">
-            <div class="progress-step" data-topik="topik1"><div class="step-dot"><i class="ri-check-line"></i></div><span class="text-xs font-bold">Topik 1: Ukuran Gawai</span></div>
-            <div class="progress-step" data-topik="topik2"><div class="step-dot"><i class="ri-check-line"></i></div><span class="text-xs font-bold">Topik 2: Input & Output</span></div>
-            <div class="progress-step" data-topik="topik3"><div class="step-dot"><i class="ri-check-line"></i></div><span class="text-xs font-bold">Topik 3: Rawat Gadget</span></div>
-          </div>
-        </div>
       </div>
       <div></div>
     </section>
 
     <section id="screen-materi-hub" class="app-screen smooth-transition p-3 sm:p-4 opacity-0 pointer-events-none translate-x-full">
       <div class="w-full flex items-center justify-between">
-        <button onclick="changeScreen('screen-menu')" class="smooth-transition px-4 py-2 rounded-xl panel-solid text-xs font-bold flex items-center gap-2"><i class="fa-solid fa-chevron-left"></i> Menu Utama</button>
-        <h2 class="text-xl font-extrabold font-display text-gradient pr-24">Pilih Topik Materi Belajar 📖</h2>
+        <button onclick="changeScreen('screen-menu')" class="smooth-transition px-4 py-2 rounded-xl panel-solid text-xs font-bold flex items-center gap-2"><i class="fa-solid fa-chevron-left"></i> Menu</button>
+        <h2 class="text-xl font-extrabold font-display text-gradient pr-24">Pilih Topik Materi Belajar 📚</h2>
       </div>
-      <div class="my-auto grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl w-full mx-auto px-4">
-        <div onclick="selectMateriTopik('topik1')" class="card-game-select glass-panel p-5 rounded-2xl text-center cursor-pointer border-b-4 border-blue-500 relative">
-          <span class="materi-done-badge absolute top-2 right-2 text-emerald-500 hidden" data-topik-badge="topik1"><i class="ri-checkbox-circle-fill text-lg"></i></span>
-          <i class="ri-smartphone-line text-4xl text-blue-500 block mb-2"></i>
-          <h4 class="font-bold font-display text-base">Topik 1: Ukuran Gawai</h4>
-          <p class="text-[11px] text-[var(--text-muted)] mt-1">Eksplorasi rentang ukuran fisik komputer.</p>
+
+      <div class="my-auto grid grid-cols-1 md:grid-cols-3 gap-4 max-w-4xl w-full mx-auto px-4">
+        <div onclick="loadTopikViewer('topik1')" class="card-game-select glass-panel p-5 rounded-2xl border-b-4 border-blue-500 relative">
+          <span class="materi-done-badge absolute top-2 right-2 text-blue-500 hidden" data-topik-badge="topik1"><i class="ri-checkbox-circle-fill text-lg"></i></span>
+          <i class="ri-computer-line text-4xl text-blue-500 block mb-2"></i>
+          <h4 class="font-bold font-display text-base">Topik 1: Perangkat Input</h4>
+          <p class="text-[11px] text-[var(--text-muted)] mt-1">Belajar Keyboard, Mouse, dan pengetikan dasar.</p>
         </div>
-        <div onclick="selectMateriTopik('topik2')" class="card-game-select glass-panel p-5 rounded-2xl text-center cursor-pointer border-b-4 border-amber-500 relative">
-          <span class="materi-done-badge absolute top-2 right-2 text-emerald-500 hidden" data-topik-badge="topik2"><i class="ri-checkbox-circle-fill text-lg"></i></span>
-          <i class="ri-keyboard-line text-4xl text-amber-500 block mb-2"></i>
-          <h4 class="font-bold font-display text-base">Topik 2: Input & Output</h4>
-          <p class="text-[11px] text-[var(--text-muted)] mt-1">Memahami gerbang perintah dan hasil data.</p>
+
+        <div onclick="loadTopikViewer('topik2')" class="card-game-select glass-panel p-5 rounded-2xl border-b-4 border-purple-500 relative">
+          <span class="materi-done-badge absolute top-2 right-2 text-purple-500 hidden" data-topik-badge="topik2"><i class="ri-checkbox-circle-fill text-lg"></i></span>
+          <i class="ri-tv-line text-4xl text-purple-500 block mb-2"></i>
+          <h4 class="font-bold font-display text-base">Topik 2: Perangkat Output</h4>
+          <p class="text-[11px] text-[var(--text-muted)] mt-1">Mengenal Monitor, Printer, dan Speaker visual.</p>
         </div>
-        <div onclick="selectMateriTopik('topik3')" class="card-game-select glass-panel p-5 rounded-2xl text-center cursor-pointer border-b-4 border-emerald-500 relative">
+
+        <div onclick="loadTopikViewer('topik3')" class="card-game-select glass-panel p-5 rounded-2xl border-b-4 border-emerald-500 relative">
           <span class="materi-done-badge absolute top-2 right-2 text-emerald-500 hidden" data-topik-badge="topik3"><i class="ri-checkbox-circle-fill text-lg"></i></span>
           <i class="ri-heart-pulse-line text-4xl text-emerald-500 block mb-2"></i>
           <h4 class="font-bold font-display text-base">Topik 3: Rawat Gadget</h4>
@@ -714,71 +714,65 @@
       <div class="flex-grow flex flex-col max-w-4xl w-full mx-auto panel-solid border rounded-2xl p-4 my-3 min-h-0">
         <div class="flex items-center gap-2 flex-wrap mb-4 flex-shrink-0">
           <button onclick="switchGayaBelajar('visual')" id="tab-visual" class="materi-tab-btn active subtab-btn">
-            <i class="ri-gallery-line mr-1"></i>Visual
+            <i class="ri-gallery-line mr-1"></i> 1. Visual Kad
           </button>
           <button onclick="switchGayaBelajar('audio')" id="tab-audio" class="materi-tab-btn subtab-btn">
-            <i class="ri-volume-up-line mr-1"></i>Audio
+            <i class="ri-volume-up-line mr-1"></i> 2. Audio Teater
           </button>
           <button onclick="switchGayaBelajar('video')" id="tab-video" class="materi-tab-btn subtab-btn">
-            <i class="ri-video-line mr-1"></i>Video
+            <i class="ri-clapperboard-line mr-1"></i> 3. Video Sinema
           </button>
           <button onclick="switchGayaBelajar('kinestetik')" id="tab-kinestetik" class="materi-tab-btn subtab-btn">
-            <i class="ri-hand-coin-line mr-1"></i>Kinestetik
+            <i class="ri-run-line mr-1"></i> 4. Kinestetik Aktivitas
           </button>
         </div>
 
         <div class="flex-1 min-h-0 overflow-y-auto">
           <div id="view-visual" class="materi-gaya-content space-y-4">
-            <div id="visual-content-cards" class="grid grid-cols-1 sm:grid-cols-2 gap-3"></div>
+            <div id="visual-content-cards" class="grid grid-cols-1 sm:grid-cols-2 gap-4"></div>
           </div>
 
           <div id="view-audio" class="materi-gaya-content hidden space-y-4">
-            <div class="glass-panel p-4 rounded-2xl space-y-3">
-              <div class="flex items-center gap-3">
-                <div class="w-12 h-12 rounded-full bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center shadow-md flex-shrink-0">
-                  <i class="fa-solid fa-headphones text-lg text-white"></i>
-                </div>
-                <div class="flex-1">
-                  <p class="text-xs font-extrabold font-display">Dengarkan Materi (Visual + Suara)</p>
-                  <p class="text-[10px] text-[var(--text-muted)]">Setiap kartu akan dibacakan robot suara satu per satu.</p>
-                </div>
+            <div class="p-4 rounded-xl border bg-purple-50/50 dark:bg-purple-950/10 flex flex-col sm:flex-row items-center justify-between gap-4">
+              <div class="text-center sm:text-left">
+                <h4 class="font-bold font-display text-sm">Mode Audio Book Dinamis</h4>
+                <p class="text-[11px] text-[var(--text-muted)] mt-0.5" id="audio-progress-label">Menunggu pemutaran audio...</p>
               </div>
               <div class="flex items-center gap-2">
-                <button onclick="toggleAudioMateriPlay()" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 rounded-xl text-xs shadow-md flex items-center justify-center gap-2">
-                  <i class="fa-solid fa-play" id="audio-play-icon"></i>
-                  <span id="audio-play-label">Putar Semua</span>
+                <button onclick="toggleAudioMateriPlay()" id="btn-audio-materi-play" class="w-10 h-10 rounded-full bg-purple-600 text-white flex items-center justify-center shadow shadow-purple-500/30">
+                  <i class="fa-solid fa-play"></i>
                 </button>
-                <button onclick="stopAudioMateriPlay()" class="w-11 h-11 rounded-xl bg-gray-200 dark:bg-gray-700 text-[var(--text)] flex items-center justify-center flex-shrink-0">
+                <button onclick="stopAudioMateriPlay()" class="w-10 h-10 rounded-full border border-purple-300 text-purple-600 flex items-center justify-center">
                   <i class="fa-solid fa-stop"></i>
                 </button>
               </div>
-              <div class="bg-gray-200 dark:bg-gray-700 rounded-full h-2">
-                <div class="timer-bar" id="audio-progress-bar" style="width:0%"></div>
-              </div>
-              <p class="text-[10px] text-[var(--text-muted)] text-center" id="audio-progress-label">Tekan putar untuk mulai mendengarkan</p>
             </div>
-
-            <div id="audio-content-cards" class="grid grid-cols-1 sm:grid-cols-2 gap-3"></div>
+            <div class="w-full bg-gray-200 dark:bg-gray-700 h-2 rounded-full overflow-hidden">
+              <div id="audio-progress-bar" class="bg-purple-600 h-full w-0 transition-all duration-300"></div>
+            </div>
+            <div id="audio-content-cards" class="grid grid-cols-1 gap-3"></div>
           </div>
 
-          <div id="view-video" class="materi-gaya-content hidden space-y-3">
-            <div class="video-embed-container" id="video-embed-wrap">
+          <div id="view-video" class="materi-gaya-content hidden space-y-4">
+            <div class="p-4 rounded-xl border border-dashed border-[var(--border)] text-center sm:text-left flex flex-col sm:flex-row items-center justify-between gap-4">
+              <div>
+                <h4 class="font-bold font-display text-sm" id="video-label-text">Video Materi Pembelajaran</h4>
+                <p class="text-[11px] text-[var(--text-muted)] mt-0.5">Tonton video edukasi interaktif untuk visualisasi nyata.</p>
+              </div>
+              <a id="video-open-link" href="#" target="_blank" class="px-3 py-1.5 rounded-lg border border-red-400 text-red-500 font-bold text-xs"><i class="fa-brands fa-youtube mr-1"></i> Buka YouTube</a>
+            </div>
+            <div class="video-embed-container">
               <iframe id="materi-video-iframe" src="" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
             </div>
-            <div class="flex items-center justify-between">
-              <p class="text-[11px] text-[var(--text-muted)] font-bold" id="video-label-text">Video Pembelajaran</p>
-              <a id="video-open-link" href="#" target="_blank" class="text-[11px] text-blue-500 font-bold flex items-center gap-1"><i class="fa-solid fa-external-link-alt"></i> Tonton di YouTube</a>
-            </div>
           </div>
 
-          <div id="view-kinestetik" class="materi-gaya-content hidden space-y-3">
-            <div class="glass-panel p-5 rounded-2xl border-l-4 border-emerald-500 space-y-3 text-center sm:text-left">
+          <div id="view-kindestetik" class="materi-gaya-content hidden space-y-4">
+            <div class="glass-panel p-5 rounded-2xl border-l-4 border-emerald-500 text-center sm:text-left flex flex-col sm:flex-row items-center gap-4">
               <div class="w-12 h-12 rounded-xl bg-emerald-50 dark:bg-emerald-950/30 text-emerald-500 flex items-center justify-center text-xl mx-auto sm:mx-0"><i class="ri-hand-sparkler-line"></i></div>
               <h4 class="font-extrabold font-display text-sm">Aktivitas Gerak Kinestetik Luar Layar:</h4>
               <p class="text-xs sm:text-sm leading-relaxed text-[var(--text-muted)]" id="txt-kinestetik-desc">-</p>
               <div class="pt-2"><span class="bg-emerald-500 text-white text-[10px] font-black px-2.5 py-1 rounded-full uppercase">Praktek Mandiri Bersama Guru</span></div>
             </div>
-
             <div id="kinestetik-video-wrap" class="space-y-2 hidden">
               <p class="text-[11px] font-bold text-[var(--text-muted)]"><i class="ri-video-line mr-1"></i>Video Contoh Gerakan:</p>
               <div class="video-embed-container">
@@ -798,67 +792,55 @@
       </div>
 
       <div class="my-auto grid grid-cols-1 lg:grid-cols-12 gap-4 max-w-6xl w-full mx-auto px-2 min-h-0 flex-grow pt-3 pb-2">
-        <div class="lg:col-span-3 space-y-3 flex flex-col justify-start">
-          <div class="glass-panel p-3 rounded-2xl space-y-2">
-            <p class="text-[10px] font-black uppercase text-[var(--text-muted)] tracking-wider">Pilih Aturan Main:</p>
-            <button onclick="switchGameMode('solo')" id="btn-mode-solo" class="w-full py-2 rounded-xl text-xs font-bold text-left px-3 border transition-all flex items-center justify-between"><span>🧑 Mode Solo (Mandiri)</span><i class="ri-user-line"></i></button>
-            <button onclick="switchGameMode('battle')" id="btn-mode-battle" class="w-full py-2 rounded-xl text-xs font-bold text-left px-3 border transition-all flex items-center justify-between"><span>👥 Duel 2 Player (IFP)</span><i class="ri-user-shared-line"></i></button>
+        <div class="lg:col-span-3 flex flex-col gap-2">
+          <div class="glass-panel p-4 rounded-2xl space-y-2">
+            <h4 class="text-xs font-bold uppercase font-mono tracking-wider text-[var(--text-muted)]">Pilih Ragam Game</h4>
+            <button onclick="switchGameMode('solo')" id="btn-mode-solo" class="w-full py-2 rounded-xl text-xs font-bold text-left px-3 border transition-all flex items-center justify-between"><span>🤖 Mode Tebak Solo</span><i class="ri-user-line"></i></button>
+            <button onclick="switchGameMode('battle')" id="btn-mode-battle" class="w-full py-2 rounded-xl text-xs font-bold text-left px-3 border transition-all flex items-center justify-between"><span>💥 Duel Layar Sentuh</span><i class="ri-group-line"></i></button>
           </div>
-
-          <div class="glass-panel p-3 rounded-2xl text-center space-y-2">
-            <p class="text-[10px] font-black uppercase text-[var(--text-muted)] tracking-wider">Sesi Poin Kamu:</p>
-            <div class="text-4xl font-black text-purple-600 font-display" id="txt-session-score">0</div>
-          </div>
-
-          <div class="glass-panel p-3 rounded-2xl space-y-2">
-            <div class="text-3xl font-black font-display text-center" id="game-timer-display">00:00</div>
-            <div class="bg-gray-200 dark:bg-gray-700 rounded-full h-1.5">
-              <div class="timer-bar" id="game-timer-bar" style="width:100%"></div>
-            </div>
-            <div class="flex gap-1">
-              <button onclick="startGameTimer()" class="flex-1 py-1.5 rounded-lg bg-green-500 text-white font-bold text-[10px]">Mulai</button>
-              <button onclick="resetGameTimer()" class="flex-1 py-1.5 rounded-lg bg-gray-400 text-white font-bold text-[10px]">Reset</button>
-            </div>
+          <div class="panel-solid border p-4 rounded-2xl flex items-center justify-between">
+            <div class="text-xs font-bold uppercase text-[var(--text-muted)] font-mono">Waktu Bermain:</div>
+            <div class="text-xl font-black font-mono text-gradient" id="game-timer-display">00:00</div>
           </div>
         </div>
 
-        <div class="lg:col-span-9 panel-solid border-4 rounded-2xl flex flex-col justify-between p-4 min-h-0 overflow-y-auto border-emerald-500">
-          <div class="my-auto w-full flex flex-col items-center">
-            <div id="solo-game-container" class="w-full max-w-md space-y-4 text-center">
-              <span class="bg-blue-500 text-white text-[10px] font-black px-3 py-1 rounded-full">MODE MANDIRI (SOLO)</span>
-              <p class="text-xs font-bold">Pilah Kategori Alat di Bawah Ini:</p>
-              <div class="text-5xl font-black text-blue-500 font-display tracking-wide min-h-[56px] flex items-center justify-center" id="txt-solo-quest">-</div>
-              <div class="grid grid-cols-2 gap-3 pt-2">
-                <button onclick="submitSoloGameAnswer('INPUT')" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 rounded-xl text-sm shadow-md transition-transform hover:scale-105">⌨️ INPUT</button>
-                <button onclick="submitSoloGameAnswer('OUTPUT')" class="bg-orange-500 hover:bg-orange-600 text-white font-bold py-4 rounded-xl text-sm shadow-md transition-transform hover:scale-105">🖥️ OUTPUT</button>
-              </div>
-              <div class="flex items-center justify-center gap-4 pt-2 text-xs font-mono">
-                <span class="text-green-500 font-bold">✓ <span id="solo-correct">0</span> Benar</span>
-                <span class="text-red-400 font-bold">✗ <span id="solo-wrong">0</span> Salah</span>
-              </div>
+        <div class="lg:col-span-9 flex flex-col justify-center min-h-0 h-full">
+          <div id="solo-game-container" class="glass-panel p-6 rounded-3xl text-center space-y-6 max-w-xl mx-auto w-full">
+            <div class="flex justify-center items-center gap-6 border-b pb-3 border-[var(--border)]">
+              <div><span class="text-[10px] font-bold text-green-500 uppercase font-mono">Benar</span><div class="text-2xl font-black font-mono text-green-500" id="solo-correct">0</div></div>
+              <div class="w-px h-8 bg-[var(--border)]"></div>
+              <div><span class="text-[10px] font-bold text-red-500 uppercase font-mono">Salah</span><div class="text-2xl font-black font-mono text-red-500" id="solo-wrong">0</div></div>
             </div>
+            <div class="space-y-2">
+              <span class="bg-blue-100 dark:bg-blue-950/40 text-blue-600 text-[10px] font-black tracking-widest px-3 py-1 rounded-full uppercase">Klasifikasikan Perangkat:</span>
+              <h3 class="text-3xl font-black font-display tracking-wide min-h-[48px] flex items-center justify-center text-slate-800 dark:text-white" id="txt-solo-quest">-</h3>
+            </div>
+            <div class="grid grid-cols-2 gap-4">
+              <button onclick="submitSoloGameAnswer('INPUT')" class="bg-blue-600 text-white font-black font-display text-lg py-5 rounded-2xl shadow-lg shadow-blue-500/20 active:scale-[0.97] transition-all">INPUT <br /><span class="text-[10px] font-mono opacity-80">(Masuk)</span></button>
+              <button onclick="submitSoloGameAnswer('OUTPUT')" class="bg-orange-500 text-white font-black font-display text-lg py-5 rounded-2xl shadow-lg shadow-orange-500/20 active:scale-[0.97] transition-all">OUTPUT <br /><span class="text-[10px] font-mono opacity-80">(Keluar)</span></button>
+            </div>
+          </div>
 
-            <div id="battle-game-container" class="w-full hidden space-y-4">
-              <div class="text-center"><span class="bg-red-500 text-white text-[10px] font-black px-3 py-1 rounded-full">MODE DUEL LAYAR SENTUH 2 PLAYER</span></div>
-              <div class="battle-arena-split">
-                <div class="player-side border-blue-400">
-                  <div class="text-center"><h5 class="text-xs font-bold text-blue-500">🔵 Player 1 (Kiri)</h5><div class="text-lg font-black font-mono mt-1" id="battle-score-p1">Skor: 0</div></div>
-                  <div class="w-full bg-gray-200 dark:bg-gray-700 h-2 rounded-full overflow-hidden mt-1"><div id="p1-progress" class="bg-blue-500 h-full w-0 transition-all"></div></div>
-                  <div class="text-xl font-extrabold my-4 font-display h-12 flex items-center text-center" id="txt-p1-quest">-</div>
-                  <div class="grid grid-cols-2 gap-2 w-full">
-                    <button onclick="submitBattleAnswer(1, 'INPUT')" class="bg-blue-600 text-white text-xs font-bold py-3 rounded-xl shadow">INPUT</button>
-                    <button onclick="submitBattleAnswer(1, 'OUTPUT')" class="bg-orange-500 text-white text-xs font-bold py-3 rounded-xl shadow">OUTPUT</button>
-                  </div>
+          <div id="battle-game-container" class="glass-panel p-4 rounded-3xl space-y-3 hidden w-full">
+            <div class="text-center"><span class="bg-red-500 text-white text-[10px] font-black px-3 py-1 rounded-full">MODE DUEL LAYAR SENTUH 2 PLAYER</span></div>
+            <div class="battle-arena-split">
+              <div class="player-side border-blue-400">
+                <div class="text-center"><h5 class="text-xs font-bold text-blue-500">🔵 Player 1 (Kiri)</h5><div class="text-lg font-black font-mono mt-1" id="battle-score-p1">Skor: 0</div></div>
+                <div class="w-full bg-gray-200 dark:bg-gray-700 h-2 rounded-full overflow-hidden mt-1"><div id="p1-progress" class="bg-blue-500 h-full w-0 transition-all"></div></div>
+                <div class="text-xl font-extrabold my-4 font-display h-12 flex items-center text-center" id="txt-p1-quest">-</div>
+                <div class="grid grid-cols-2 gap-2 w-full">
+                  <button onclick="submitBattleAnswer(1, 'INPUT')" class="bg-blue-600 text-white text-xs font-bold py-3 rounded-xl shadow">INPUT</button>
+                  <button onclick="submitBattleAnswer(1, 'OUTPUT')" class="bg-orange-500 text-white text-xs font-bold py-3 rounded-xl shadow">OUTPUT</button>
                 </div>
+              </div>
 
-                <div class="player-side border-red-400">
-                  <div class="text-center"><h5 class="text-xs font-bold text-red-500">🔴 Player 2 (Kanan)</h5><div class="text-lg font-black font-mono mt-1" id="battle-score-p2">Skor: 0</div></div>
-                  <div class="w-full bg-gray-200 dark:bg-gray-700 h-2 rounded-full overflow-hidden mt-1"><div id="p2-progress" class="bg-red-500 h-full w-0 transition-all"></div></div>
-                  <div class="text-xl font-extrabold my-4 font-display h-12 flex items-center text-center" id="txt-p2-quest">-</div>
-                  <div class="grid grid-cols-2 gap-2 w-full">
-                    <button onclick="submitBattleAnswer(2, 'INPUT')" class="bg-blue-600 text-white text-xs font-bold py-3 rounded-xl shadow">INPUT</button>
-                    <button onclick="submitBattleAnswer(2, 'OUTPUT')" class="bg-orange-500 text-white text-xs font-bold py-3 rounded-xl shadow">OUTPUT</button>
-                  </div>
+              <div class="player-side border-red-400">
+                <div class="text-center"><h5 class="text-xs font-bold text-red-500">🔴 Player 2 (Kanan)</h5><div class="text-lg font-black font-mono mt-1" id="battle-score-p2">Skor: 0</div></div>
+                <div class="w-full bg-gray-200 dark:bg-gray-700 h-2 rounded-full overflow-hidden mt-1"><div id="p2-progress" class="bg-red-500 h-full w-0 transition-all"></div></div>
+                <div class="text-xl font-extrabold my-4 font-display h-12 flex items-center text-center" id="txt-p2-quest">-</div>
+                <div class="grid grid-cols-2 gap-2 w-full">
+                  <button onclick="submitBattleAnswer(2, 'INPUT')" class="bg-blue-600 text-white text-xs font-bold py-3 rounded-xl shadow">INPUT</button>
+                  <button onclick="submitBattleAnswer(2, 'OUTPUT')" class="bg-orange-500 text-white text-xs font-bold py-3 rounded-xl shadow">OUTPUT</button>
                 </div>
               </div>
             </div>
@@ -870,181 +852,105 @@
 
     <section id="screen-kuis-hub" class="app-screen smooth-transition p-3 sm:p-4 opacity-0 pointer-events-none translate-x-full">
       <div class="w-full flex items-center justify-between">
-        <button onclick="changeScreen('screen-menu')" class="smooth-transition px-4 py-2 rounded-xl panel-solid text-xs font-bold flex items-center gap-2"><i class="fa-solid fa-chevron-left"></i> Menu Utama</button>
-        <h2 class="text-xl font-extrabold font-display text-gradient pr-24">Pilih Mode Kuis 📝</h2>
-      </div>
-
-      <div class="my-auto grid grid-cols-1 md:grid-cols-2 gap-6 max-w-3xl w-full mx-auto px-4">
-        <div onclick="startQuiz()" class="card-game-select glass-panel p-6 rounded-2xl text-center cursor-pointer border-b-4 border-amber-500 space-y-3">
-          <i class="ri-file-list-3-line text-5xl text-amber-500 block"></i>
-          <h4 class="font-bold font-display text-lg">Kuis Internal</h4>
-          <p class="text-[11px] text-[var(--text-muted)]">Soal pilihan ganda bawaan MPI dengan skor otomatis, sertifikat, dan umpan balik langsung.</p>
-          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-100 dark:bg-amber-900/30 text-amber-600 text-[10px] font-bold">
-            <span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span> 3 Soal · Skor Langsung
-          </div>
-        </div>
-
-        <div onclick="changeScreen('screen-kuis-embed-list')" class="card-game-select glass-panel p-6 rounded-2xl text-center cursor-pointer border-b-4 border-blue-500 space-y-3">
-          <i class="ri-external-link-line text-5xl text-blue-500 block"></i>
-          <h4 class="font-bold font-display text-lg">Kuis Eksternal</h4>
-          <p class="text-[11px] text-[var(--text-muted)]">Embed Wordwall, Kahoot, Quiziz, Google Form, atau platform kuis interaktif lainnya.</p>
-          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-600 text-[10px] font-bold">
-            <span class="w-1.5 h-1.5 rounded-full bg-blue-500"></span> Platform Online Embeded
-          </div>
-        </div>
-      </div>
-      <div></div>
-    </section>
-
-    <section id="screen-kuis-embed-list" class="app-screen smooth-transition p-3 sm:p-4 opacity-0 pointer-events-none translate-x-full">
-      <div class="w-full flex items-center justify-between">
-        <button onclick="changeScreen('screen-kuis-hub')" class="smooth-transition px-4 py-2 rounded-xl panel-solid text-xs font-bold flex items-center gap-2"><i class="fa-solid fa-chevron-left"></i> Hub Kuis</button>
+        <button onclick="changeScreen('screen-menu')" class="smooth-transition px-4 py-2 rounded-xl panel-solid text-xs font-bold flex items-center gap-2"><i class="fa-solid fa-chevron-left"></i> Menu</button>
         <h2 class="text-xl font-extrabold font-display text-gradient pr-24">Daftar Kuis Interaktif Cloud 🌐</h2>
       </div>
+
       <div class="my-auto max-w-xl w-full mx-auto space-y-3 overflow-y-auto max-h-[65vh] px-2" id="kuis-embed-list-container"></div>
       <div></div>
     </section>
 
     <section id="screen-kuis" class="app-screen smooth-transition p-3 sm:p-4 opacity-0 pointer-events-none translate-x-full">
       <div class="w-full flex items-center justify-between glass-panel px-4 py-2 rounded-2xl">
-        <button onclick="changeScreen('screen-kuis-hub')" class="smooth-transition px-3 py-1.5 rounded-xl panel-solid text-xs font-bold flex items-center gap-1.5"><i class="fa-solid fa-xmark"></i> Keluar</button>
-        <span id="txt-quiz-hud" class="font-mono font-bold text-xs text-[var(--text-muted)]">Soal -- / --</span>
-        <div class="flex items-center gap-2">
-          <i class="fa-regular fa-clock text-xs text-orange-400"></i>
-          <span id="txt-quiz-timer" class="font-mono font-black text-xs text-orange-500">30s</span>
-        </div>
+        <button onclick="changeScreen('screen-kuis-hub')" class="smooth-transition px-3 py-1.5 rounded-xl panel-solid text-xs font-bold flex items-center gap-1.5"><i class="fa-solid fa-xmark mr-1"></i>Keluar</button>
+        <span id="txt-kuis-title-main" class="font-display font-bold text-sm text-gradient">Kuis Internal</span>
+        <div class="text-xs font-bold code-font text-[var(--text-muted)]" id="txt-kuis-progress">0/0</div>
       </div>
 
-      <div class="my-auto max-w-lg w-full mx-auto panel-solid p-6 rounded-2xl border-2 border-amber-400 space-y-4 shadow-xl">
-        <div class="flex items-center gap-2">
-          <div class="flex gap-1" id="quiz-progress-dots"></div>
-        </div>
-        <h3 id="txt-quiz-question" class="text-sm sm:text-base font-bold text-center leading-relaxed">Loading Pertanyaan...</h3>
-        <div id="quiz-options-box" class="flex flex-col gap-2 pt-2"></div>
+      <div class="w-full max-w-xl mx-auto my-1 flex-shrink-0">
+        <div id="kuis-timer-bar" class="timer-bar" style="width: 100%"></div>
       </div>
-      <div></div>
+
+      <div class="my-auto glass-panel p-6 rounded-3xl max-w-2xl w-full mx-auto space-y-6">
+        <div class="space-y-1">
+          <span class="bg-purple-100 dark:bg-purple-950/40 text-purple-600 text-[9px] font-black tracking-widest px-2.5 py-1 rounded-full uppercase" id="txt-kuis-category">Pertanyaan Kuis</span>
+          <h3 class="text-lg sm:text-xl font-extrabold leading-snug text-slate-800 dark:text-white" id="txt-kuis-question">-</h3>
+        </div>
+
+        <div id="kuis-options-container" class="grid grid-cols-1 gap-3"></div>
+      </div>
+
+      <div class="w-full max-w-md mx-auto panel-solid border p-3 rounded-2xl flex items-center justify-between text-xs font-bold">
+        <div class="flex items-center gap-1 text-[var(--text-muted)]"><i class="ri-time-line"></i> Waktu: <span id="txt-kuis-timer-val" class="font-mono">20s</span></div>
+        <div class="text-gradient font-display" id="txt-kuis-current-score">Skor Sesi: 0</div>
+      </div>
     </section>
 
     <script>
-      // ============================================================
-      // CONFIG — Ganti SPREADSHEET_ID dan GAS_URL sesuai deployment
-      // ============================================================
-      const GAS_URL = ""; // << ISI URL Google Apps Script Web App di sini
-      const SPREADSHEET_ID = "1Q8VDu7KJyQI5ds7JM8IYGeR5VBydS0J-gNFbLQKt2js";
+      let GAS_URL = "";
 
-      // ============================================================
-      // FOTO PROFIL PEMBUAT — Google Drive
-      // ============================================================
-      // Cara isi:
-      // 1. Upload foto ke Google Drive -> klik kanan -> Share -> "Anyone with the link"
-      // 2. Ambil FILE_ID dari URL share: https://drive.google.com/file/d/FILE_ID/view
-      // 3. Tempel ke bawah ini dengan format:
-      //    const PROFILE_PHOTO_URL = "https://lh3.googleusercontent.com/d/FILE_ID";
-      // Kosongkan ("") jika ingin tetap pakai ikon default.
-      const PROFILE_PHOTO_URL = "";
-
-      // ============================================================
-      // STATE
-      // ============================================================
-      let gameMode = "solo";
-      let currentQuizIdx = 0;
-      let quizScore = 0;
-      let quizTimerInterval = null;
-      let quizTimeLeft = 30;
-      let gameTimerInterval = null;
-      let gameTimerSeconds = 0;
-      let soloCorrect = 0, soloWrong = 0;
-      let sessionScore = 0;
-      let isMusicPlaying = false;
-      let scoreP1 = 0, scoreP2 = 0;
-      let currentSoloQuest;
-      let battleQ1, battleQ2;
-      let currentTopikData = null;
-      let remoteData = null;
-      let lastQuizResult = null;
-      let activeScreenId = "screen-hero";
-      let audioCtx = null;
-
-      // ============================================================
-      // DATABASE LOKAL (FALLBACK jika Spreadsheet tidak tersambung)
-      // ============================================================
       const localDatabase = {
         topik1: {
-          title: "Topik 1: Ukuran Dimensi Gawai",
-          audio_url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
-          video_url: "https://www.youtube.com/embed/T1b1h2Bxfic",
-          video_label: "Video Pengenalan Ukuran Komputer & Gawai",
-          kinestetik: "Berdirilah bersama teman sebangkumu! Regangkan kedua tanganmu lebar-lebar seolah memeluk komputer Mainframe yang sangat besar, tahan selama 3 hitungan. Setelah itu, kuncupkan jari-jarimu sekecil mungkin seperti sedang memegang jam tangan pintar (smartwatch). Ulangi gerakan ini 3 kali sambil menyebutkan nama gawainya: 'Besar seperti Mainframe... kecil seperti Smartwatch!'",
+          title: "Topik 1: Perangkat Input (Masukan)",
+          video_label: "Video Pendukung Topik 1",
+          video_url: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+          kinestetik_desc: "Mari berdiri! Guru memberikan aba-aba: Jika guru menyebut 'Keyboard' atau 'Mouse', gerakkan jari seolah mengetik di udara atau mengklik tikus!",
           kinestetik_video: "",
           visual: [
-            { title: "1. Mainframe (Super)", desc: "Mainframe adalah komputer paling besar yang ukurannya bisa seukuran lemari pakaian atau bahkan satu ruangan penuh. Komputer raksasa ini biasanya digunakan oleh bank besar, kantor pusat bursa saham, atau lembaga pemerintah untuk mengolah jutaan data sekaligus dalam waktu yang sangat cepat. Karena ukurannya sangat besar dan harganya mahal, mainframe biasanya tidak kita temui di rumah, melainkan di ruangan khusus yang dijaga ketat dan selalu dingin.", icon: "ri-server-line", c: "text-blue-500" },
-            { title: "2. Desktop PC", desc: "Desktop PC adalah komputer meja yang sering kita lihat di ruang komputer sekolah, kantor, atau warnet. Komputer ini terdiri dari beberapa bagian terpisah, yaitu kotak CPU sebagai 'otak' komputer, monitor sebagai layar untuk melihat hasil, serta keyboard dan mouse untuk memberi perintah. Karena bagian-bagiannya terpisah dan cukup berat, desktop PC biasanya menetap di satu meja saja dan tidak dibawa berpindah-pindah.", icon: "ri-computer-line", c: "text-purple-500" },
-            { title: "3. Laptop", desc: "Laptop adalah komputer lipat yang seluruh bagiannya, yaitu layar, keyboard, dan baterai, sudah menyatu dalam satu badan yang ringkas. Karena memakai baterai, laptop bisa dibawa dan digunakan di mana saja, misalnya di kelas, di perpustakaan, atau bahkan di dalam mobil saat bepergian. Bentuknya yang bisa dilipat membuat laptop mudah dimasukkan ke dalam tas sekolah.", icon: "ri-macbook-line", c: "text-emerald-500" },
-            { title: "4. Tablet PC", desc: "Tablet adalah gawai pipih dengan layar sentuh yang lebar, namun tidak memiliki keyboard fisik seperti laptop. Untuk mengetik atau menggambar, kita cukup menyentuh layarnya langsung dengan jari atau menggunakan pena digital (stylus). Tablet sangat nyaman digunakan untuk membaca buku digital, menonton video pembelajaran, atau menggambar karya seni secara digital.", icon: "ri-tablet-line", c: "text-amber-500" },
-            { title: "5. Smartphone", desc: "Smartphone atau telepon pintar adalah komputer paling kecil yang ukurannya cukup untuk masuk ke dalam kantong baju atau saku celana. Meski kecil, smartphone bisa digunakan untuk menelepon, mengirim pesan, memotret, bermain game, dan mencari informasi di internet. Hampir semua orang dewasa di sekitar kita, seperti ibu, ayah, atau kakak, memiliki dan menggunakan smartphone setiap hari.", icon: "ri-smartphone-line", c: "text-rose-500" }
+            { title: "Keyboard (Papan Ketik)", desc: "Digunakan untuk mengetik huruf, angka, dan mengirim perintah ke komputer melalui tombol fisik khusus." },
+            { title: "Mouse (Tikus)", desc: "Menggerakkan penunjuk (kursor) di layar gawai Anda, mengklik ikon menu, serta memilih aplikasi." },
+            { title: "Mikrofon (Perekam Suara)", desc: "Menangkap suara luar dan memasukkannya ke sistem komputer untuk direkam atau dikirim dalam diskusi." }
           ]
         },
         topik2: {
-          title: "Topik 2: Pintu Data Input & Output",
-          audio_url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3",
-          video_url: "https://www.youtube.com/embed/wVnbWOMQQ3Y",
-          video_label: "Video Mengenal Alat Input dan Output",
-          kinestetik: "Pertama, ketuk-ketuk meja di depanmu sebanyak 3 kali dengan jari, seolah-olah kamu sedang mengetik huruf-huruf di papan ketik (keyboard). Ini melambangkan kegiatan INPUT, yaitu memberi perintah kepada komputer. Setelah itu, buka kedua telapak tanganmu lebar-lebar di depan wajahmu seperti sebuah layar yang sedang menampilkan gambar. Ini melambangkan kegiatan OUTPUT, yaitu hasil yang ditampilkan komputer. Ulangi gerakan ini sambil mengucapkan 'Input... lalu Output!' agar lebih mudah diingat.",
+          title: "Topik 2: Perangkat Output (Keluaran)",
+          video_label: "Video Pendukung Topik 2",
+          video_url: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+          kinestetik_desc: "Goyangkan badan! Jika guru menyebut 'Monitor', buat bentuk persegi panjang besar dengan tangan Anda di depan dada!",
           kinestetik_video: "",
           visual: [
-            { title: "Keyboard Huruf", desc: "Keyboard atau papan ketik adalah alat INPUT yang memiliki banyak tombol huruf, angka, dan simbol. Saat kita menekan salah satu tombol, komputer akan menerima perintah tersebut dan menampilkan huruf atau angka di layar. Keyboard digunakan untuk mengetik nama, mengetik cerita, mencari informasi, atau memasukkan kata sandi.", icon: "ri-keyboard-line", c: "text-purple-500" },
-            { title: "Mouse Sensor", desc: "Mouse adalah alat INPUT yang digunakan untuk menggerakkan penunjuk (kursor) di layar komputer. Dengan menggeser mouse di atas meja dan menekan tombol klik, kita bisa memilih gambar, membuka aplikasi, atau menggambar di layar. Beberapa mouse juga memiliki roda kecil di tengah untuk menggulung tampilan ke atas dan ke bawah.", icon: "ri-mouse-line", c: "text-orange-500" },
-            { title: "Monitor/Layar", desc: "Monitor adalah alat OUTPUT utama yang menampilkan semua hasil pekerjaan komputer dalam bentuk gambar, huruf, warna, dan video. Tanpa monitor, kita tidak akan bisa melihat apa yang sedang dikerjakan oleh komputer. Ukuran monitor bermacam-macam, mulai dari yang kecil di smartphone sampai yang besar di ruang kelas untuk presentasi.", icon: "ri-computer-line", c: "text-blue-500" },
-            { title: "Printer Warna", desc: "Printer adalah alat OUTPUT yang berfungsi mencetak data dari komputer, seperti tulisan atau gambar, ke atas kertas. Setelah kita selesai mengetik tugas atau membuat gambar di komputer, printer dapat mencetaknya menjadi lembaran kertas yang bisa dibawa, ditempel, atau dikumpulkan kepada guru.", icon: "ri-printer-line", c: "text-emerald-500" }
+            { title: "Monitor (Layar)", desc: "Menampilkan gambar, tulisan, video, game, dan semua hasil pengolahan gawai yang bisa dilihat mata." },
+            { title: "Printer (Pencetak)", desc: "Mencetak tulisan atau gambar dari komputer ke media fisik kertas nyata menggunakan tinta berwarna." },
+            { title: "Speaker (Pengeras Suara)", desc: "Mengeluarkan getaran gelombang suara, musik, serta efek bunyi digital agar terdengar oleh telinga kita." }
           ]
         },
         topik3: {
-          title: "Topik 3: Etika Perawatan Gawai",
-          audio_url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3",
-          video_url: "https://www.youtube.com/embed/G5uOBZEN7X8",
-          video_label: "Video Cara Merawat Gadget dengan Benar",
-          kinestetik: "Ambil kain bersih atau gunakan telapak tanganmu, lalu praktikkan gerakan menyeka permukaan meja atau buku secara lembut dengan arah memutar atau melingkar, seperti sedang membersihkan layar laptop dari debu. Lakukan gerakan ini secara perlahan dan hati-hati, jangan terlalu menekan. Setelah itu, praktikkan juga cara meletakkan benda (misalnya buku tulis sebagai pengganti laptop) di tempat yang aman, jauh dari tepi meja agar tidak mudah terjatuh, sambil didampingi oleh gurumu.",
+          title: "Topik 3: Merawat Gadget Harian",
+          video_label: "Video Pendukung Topik 3",
+          video_url: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+          kinestetik_desc: "Tangan bersih! Guru memandu simulasi membersihkan layar laptop menggunakan kain halus secara perlahan berputar.",
           kinestetik_video: "",
           visual: [
-            { title: "Kain Serat Mikro", desc: "Kain serat mikro (microfiber) adalah kain khusus yang teksturnya sangat halus dan lembut, sehingga aman digunakan untuk membersihkan layar dan permukaan kaca gawai. Berbeda dengan tisu atau kain kasar yang bisa membuat layar tergores, kain serat mikro mampu mengangkat debu dan sidik jari tanpa meninggalkan bekas goresan. Gunakan kain ini dalam keadaan kering dan usap secara perlahan.", icon: "ri-hand-sanitizer-line", c: "text-rose-500" },
-            { title: "Hindari Air Minum", desc: "Air dan komputer adalah dua hal yang tidak boleh bertemu! Jika air tumpah ke atas keyboard, layar, atau bagian dalam laptop, komponen elektroniknya bisa rusak dan tidak bisa digunakan lagi. Oleh karena itu, sebaiknya botol minum, gelas, atau makanan berkuah diletakkan jauh dari meja komputer atau laptop saat sedang digunakan.", icon: "ri-cup-line", c: "text-red-500" },
-            { title: "Charge Teratur", desc: "Baterai pada laptop, tablet, dan smartphone perlu diisi ulang (di-charge) secara teratur agar gawai tetap bisa digunakan dengan baik. Sebaiknya isi daya sebelum baterai benar-benar habis, dan jangan biarkan gawai terus mengisi daya dalam waktu yang sangat lama setelah penuh, karena dapat membuat baterai cepat rusak. Gunakan juga charger asli yang sesuai dengan gawainya.", icon: "ri-battery-charge-line", c: "text-green-500" },
-            { title: "Simpan di Tempat Aman", desc: "Setelah selesai digunakan, gawai sebaiknya disimpan di tempat yang aman, tidak terkena sinar matahari langsung, jauh dari tepi meja, dan tidak diletakkan sembarangan di lantai. Suhu yang terlalu panas dan benturan keras dapat merusak komponen di dalam gawai. Menyimpan gawai dengan rapi juga membantu kita untuk menemukannya kembali dengan mudah saat dibutuhkan.", icon: "ri-shield-check-line", c: "text-blue-500" }
+            { title: "Gunakan Lap Lembut", desc: "Lap layar laptop atau tablet Anda menggunakan kain mikrofiber halus secara berkala agar bebas debu." },
+            { title: "Jauhkan dari Air", desc: "Cairan dapat merusak sirkuit elektronik bagian dalam. Jangan letakkan gelas minum terlalu dekat dengan laptop." },
+            { title: "Isi Daya Secara Benar", desc: "Gunakan pengisi daya asli dan cabut kabel charger jika indikator baterai sudah penuh agar tidak gembung." }
           ]
         }
       };
 
       const localKuisEmbed = [
-        { title: "Kuis Wordwall – Perangkat Komputer", platform: "Wordwall", icon: "ri-game-fill", color: "text-purple-500", badge_color: "bg-purple-100 dark:bg-purple-900/30 text-purple-600", embed_url: "https://wordwall.net/id/embed/cd1cd8b6bb394b9e8bfad438de580c47" }
+        { title: "🧩 Kuis Interaktif Perangkat Input", desc: "Uji pengetahuanmu seputar keyboard, mouse, mikrofon via aplikasi eksternal Wordwall.", url: "https://wordwall.net/embed/b0b5d5d88691459e9cae2030283c79c8?themeId=1&templateId=5&fontStackId=0" },
+        { title: "🚀 Evaluasi Perangkat Output & Casing", desc: "Tebak fungsi monitor, printer, dan pengeras suara pada gawai modern sekolah.", url: "https://wordwall.net/embed/4b8aef9f15044ab4bcbe9cc788775db2?themeId=23&templateId=3&fontStackId=0" },
+        { title: "📝 Ujian Internal MPI Perangkat Digital", desc: "Kuis internal sistem berwaktu. Selesaikan kuis ini untuk mengklaim sertifikat kelulusan formal.", type: "internal" }
       ];
 
       const gameDevices = [
-        { name: "Papan Ketik (Keyboard)", type: "INPUT" },
-        { name: "Tikus Klik (Mouse)", type: "INPUT" },
-        { name: "Layar TV Kaca (Monitor)", type: "OUTPUT" },
-        { name: "Mesin Cetak Kertas (Printer)", type: "OUTPUT" },
-        { name: "Alat Pemindai Gambar (Scanner)", type: "INPUT" },
-        { name: "Pengeras Suara (Speaker)", type: "OUTPUT" },
-        { name: "Tongkat Game (Joystick)", type: "INPUT" },
-        { name: "Pita Proyektor Sorot", type: "OUTPUT" },
-        { name: "Mikrofon Suara (Microphone)", type: "INPUT" },
-        { name: "Kamera Webcam", type: "INPUT" },
-        { name: "Headphone / Earphone", type: "OUTPUT" },
-        { name: "Layar Sentuh (Touchscreen)", type: "INPUT" },
-        { name: "Papan Gambar Digital (Pen Tablet)", type: "INPUT" },
-        { name: "Mesin Plotter Cetak Besar", type: "OUTPUT" },
-        { name: "Lampu Sorot Proyektor", type: "OUTPUT" },
-        { name: "Stik Trackpad Sentuh", type: "INPUT" }
+        { name: "Keyboard", type: "INPUT" },
+        { name: "Mouse", type: "INPUT" },
+        { name: "Monitor", type: "OUTPUT" },
+        { name: "Printer", type: "OUTPUT" },
+        { name: "Speaker", type: "OUTPUT" },
+        { name: "Mikrofon", type: "INPUT" },
+        { name: "Scanner", type: "INPUT" },
+        { name: "Proyektor", type: "OUTPUT" },
+        { name: "Joystick", type: "INPUT" },
+        { name: "Headphone", type: "OUTPUT" }
       ];
 
-      const quizBank = [
-        { q: "Urutan jenis komputer dari yang ukurannya paling RAKSASA ke yang paling mini/kecil adalah...", opts: ["Smartphone - Laptop - Mainframe", "Mainframe - Laptop - Smartphone", "Laptop - Smartphone - Mainframe"], ans: 1, expl: "Mainframe seukuran lemari besar, laptop seukuran tas jinjing, smartphone masuk kantong baju anak." },
-        { q: "Manakah di bawah ini perangkat komputer yang bertugas mengeluarkan HASIL CETAKAN visual gambar atau teks pada media kertas?", opts: ["Keyboard", "Mouse", "Printer Warna"], ans: 2, expl: "Printer adalah perangkat OUTPUT yang mencetak data digital ke kertas." },
-        { q: "Tindakan yang benar saat layar komputer berdebu adalah...", opts: ["Siram dengan air", "Seka dengan kain micro-fiber kering", "Biarkan saja"], ans: 1, expl: "Kain micro-fiber kering aman membersihkan layar tanpa goresan dan air." },
-        { q: "Komputer meja yang bagian CPU, monitor, keyboard, dan mouse-nya terpisah dan biasa ditemukan di ruang komputer sekolah disebut...", opts: ["Smartphone", "Desktop PC", "Tablet"], ans: 1, expl: "Desktop PC memiliki bagian-bagian terpisah dan biasanya menetap di satu meja." },
-        { q: "Gawai berlayar lebar yang dioperasikan dengan cara disentuh langsung pakai jari, tanpa keyboard fisik, adalah...", opts: ["Tablet PC", "Mainframe", "Printer"], ans: 0, expl: "Tablet PC menggunakan layar sentuh dan tidak memerlukan keyboard fisik." },
-        { q: "Mouse merupakan contoh perangkat...", opts: ["INPUT, karena memberi perintah ke komputer", "OUTPUT, karena menampilkan hasil", "Tidak termasuk perangkat apapun"], ans: 0, expl: "Mouse digunakan untuk memberi perintah/menggerakkan kursor, sehingga termasuk perangkat INPUT." },
-        { q: "Alat yang berfungsi mengubah suara menjadi data yang dapat diterima komputer disebut...", opts: ["Speaker", "Mikrofon", "Monitor"], ans: 1, expl: "Mikrofon adalah perangkat INPUT yang menangkap suara untuk diolah komputer." },
+      const internalQuestions = [
+        { q: "Manakah di bawah ini yang merupakan perangkat INPUT pada komputer?", opts: ["Monitor", "Mouse", "Printer"], ans: 1, expl: "Mouse bertindak mengirimkan perintah klik (masukan) ke sistem komputer." },
+        { q: "Perangkat yang bertugas menampilkan gambar visual di layar adalah...", opts: ["Monitor", "Speaker", "Keyboard"], ans: 0, expl: "Monitor adalah perangkat OUTPUT visual utama untuk memantau aktivitas gawai." },
+        { q: "Piranti keras yang digunakan anak-anak untuk merekam suara ke komputer disebut...", opts: ["Speaker", "Mikrofon", "Monitor"], ans: 1, expl: "Mikrofon adalah perangkat INPUT yang menangkap suara untuk diolah komputer." },
         { q: "Manakah pasangan yang benar antara perangkat dan jenisnya?", opts: ["Speaker - INPUT", "Keyboard - OUTPUT", "Monitor - OUTPUT"], ans: 2, expl: "Monitor menampilkan hasil olahan komputer, sehingga termasuk perangkat OUTPUT." },
         { q: "Agar baterai laptop atau tablet awet, sebaiknya kita...", opts: ["Mengisi daya secara teratur sebelum benar-benar habis", "Membiarkan baterai habis total setiap hari", "Mengisi daya dengan charger sembarang merek"], ans: 0, expl: "Mengisi daya secara teratur dan menggunakan charger asli membantu baterai lebih awet." },
         { q: "Tempat menyimpan laptop yang paling tepat setelah selesai digunakan adalah...", opts: ["Di tepi meja dekat jendela yang panas", "Di tempat datar, aman, dan terhindar dari sinar matahari langsung", "Di lantai dekat pintu"], ans: 1, expl: "Menyimpan gawai di tempat aman dan sejuk mencegah kerusakan akibat panas atau benturan." },
@@ -1067,45 +973,35 @@
       // UTILITAS UMUM
       // ============================================================
       function showToast(msg, color = "blue") {
-        const toast = document.getElementById("notification-toast");
-        document.getElementById("toast-msg").innerText = msg;
-        toast.classList.add("show");
-        setTimeout(() => toast.classList.remove("show"), 2500);
+        const t = document.getElementById("notification-toast");
+        const m = document.getElementById("toast-msg");
+        if (!t || !m) return;
+        m.innerText = msg;
+        t.className = "show";
+        setTimeout(() => t.className = "", 3000);
       }
 
-      function openModal(id) { document.getElementById(id).classList.add("open"); }
-      function closeModal(id) { document.getElementById(id).classList.remove("open"); }
-
-      function getStudentName(callback) {
-        const saved = localStorage.getItem("mpi_student_name");
-        if (saved) { callback(saved); return; }
-        Swal.fire({
-          title: "👋 Siapa nama kamu?",
-          input: "text",
-          inputPlaceholder: "Tulis nama lengkapmu...",
-          confirmButtonText: "Mulai!",
-          confirmButtonColor: "var(--blue)",
-          allowOutsideClick: false,
-          inputValidator: (value) => !value && "Nama tidak boleh kosong ya!"
-        }).then((res) => {
-          const name = (res.value || "Siswa").trim();
-          localStorage.setItem("mpi_student_name", name);
-          callback(name);
-        });
+      function openModal(id) {
+        const modal = document.getElementById(id);
+        if (modal) modal.classList.add("open");
+      }
+      function closeModal(id) {
+        const modal = document.getElementById(id);
+        if (modal) modal.classList.remove("open");
       }
 
-      // ============================================================
-      // NAVIGASI SCREEN (dengan transisi 3D flip)
-      // ============================================================
+      let activeScreenId = "screen-hero";
       function changeScreen(screenId) {
-        const screens = [
-          "screen-hero","screen-menu","screen-kompetensi",
-          "screen-materi-hub","screen-materi-viewer",
-          "screen-gameplay","screen-kuis-hub","screen-kuis",
-          "screen-kuis-embed-list"
-        ];
-        screens.forEach(s => {
-          const el = document.getElementById(s);
+        const screens = document.querySelectorAll(".app-screen");
+        screens.forEach(el => {
+          const s = el.id;
+          if (s === activeScreenId) {
+            el.classList.add("flip-out");
+            setTimeout(() => {
+              el.classList.add("opacity-0","pointer-events-none","translate-x-full");
+              el.classList.remove("flip-out");
+            }, 300);
+          }
           if (s === screenId) {
             el.classList.remove("opacity-0","pointer-events-none","translate-x-full","translate-x-[-100%]","flip-out");
             el.classList.add("opacity-100","flip-in");
@@ -1122,6 +1018,7 @@
       // ============================================================
       // REMOTE DATA (Google Apps Script)
       // ============================================================
+      let remoteData = null;
       async function fetchRemoteData() {
         if (!GAS_URL) {
           setConnStatus(false, "Lokal");
@@ -1166,90 +1063,45 @@
       }
 
       function refreshData() {
-        showToast("🔄 Menyegarkan sinkronisasi cloud...");
+        showToast("🔄 Menyinkronkan data cloud ulang...");
         fetchRemoteData();
+        closeModal("profile-modal");
       }
 
       // ============================================================
-      // PROFIL — FOTO DARI GOOGLE DRIVE
+      // PENGATUR MATERI VIEW
       // ============================================================
-      function applyProfilePhoto() {
-        if (!PROFILE_PHOTO_URL) return;
+      let currentTopikData = null;
+      let topikKey = "";
 
-        const toolbarImg = document.getElementById("profile-photo-toolbar");
-        const toolbarIcon = document.getElementById("profile-icon-toolbar");
-        const modalImg = document.getElementById("profile-photo-modal");
-        const modalIcon = document.getElementById("profile-icon-modal");
-
-        [toolbarImg, modalImg].forEach(img => {
-          img.src = PROFILE_PHOTO_URL;
-          img.classList.remove("hidden");
-        });
-        toolbarIcon.classList.add("hidden");
-        modalIcon.classList.add("hidden");
-
-        // Fallback jika gambar gagal dimuat (link salah / tidak publik)
-        toolbarImg.onerror = () => {
-          toolbarImg.classList.add("hidden");
-          toolbarIcon.classList.remove("hidden");
-        };
-        modalImg.onerror = () => {
-          modalImg.classList.add("hidden");
-          modalIcon.classList.remove("hidden");
-        };
+      function openMateriSubmenu() {
+        changeScreen("screen-materi-hub");
       }
 
-      // ============================================================
-      // MUSIC TOGGLE
-      // ============================================================
-      function toggleMusic() {
-        const audio = document.getElementById("bg-music");
-        const vis = document.getElementById("music-vis");
-        if (isMusicPlaying) {
-          audio.pause();
-          vis.classList.add("paused");
-          showToast("🔇 Musik dimatikan");
-        } else {
-          audio.volume = 0.25;
-          audio.play().catch(()=>{});
-          vis.classList.remove("paused");
-          showToast("🎵 Musik latar diputar");
-        }
-        isMusicPlaying = !isMusicPlaying;
-      }
-
-      // ============================================================
-      // THEME
-      // ============================================================
-      function toggleTheme() {
-        document.documentElement.classList.toggle("dark");
-        showToast(document.documentElement.classList.contains("dark") ? "🌙 Mode Gelap" : "☀️ Mode Terang");
-      }
-
-      // ============================================================
-      // PROFIL
-      // ============================================================
-      function openCreatorProfile() { openModal("profile-modal"); }
-
-      // ============================================================
-      // B. MATERI
-      // ============================================================
-      function openMateriSubmenu() { changeScreen("screen-materi-hub"); }
-
-      function selectMateriTopik(topikKey) {
-        currentTopikData = localDatabase[topikKey];
+      function loadTopikViewer(key) {
+        topikKey = key;
+        currentTopikData = localDatabase[key];
         document.getElementById("txt-current-topik-title").innerText = currentTopikData.title;
-        document.getElementById("txt-kinestetik-desc").innerText = currentTopikData.kinestetik;
+        document.getElementById("txt-kinestetik-desc").innerText = currentTopikData.kinestetik_desc;
 
-        const container = document.getElementById("visual-content-cards");
-        container.innerHTML = "";
-        currentTopikData.visual.forEach(v => {
-          container.innerHTML += `
-            <div class="panel-solid p-3 rounded-xl flex items-center gap-3 border shadow-sm hover:shadow-md transition-shadow">
-              <div class="w-12 h-12 flex items-center justify-center rounded-xl bg-gray-100 dark:bg-gray-800 ${v.c} flex-shrink-0">
-                <i class="${v.icon} text-2xl"></i>
-              </div>
+        const visWrap = document.getElementById("visual-content-cards");
+        const audWrap = document.getElementById("audio-content-cards");
+        visWrap.innerHTML = "";
+        audWrap.innerHTML = "";
+
+        currentTopikData.visual.forEach((v, idx) => {
+          visWrap.innerHTML += `
+            <div class="panel-solid border p-4 rounded-2xl flex items-start gap-3 shadow-sm hover:border-blue-400 transition-all">
+              <div class="w-8 h-8 rounded-lg bg-blue-50 dark:bg-blue-950/40 text-blue-500 flex items-center justify-center flex-shrink-0 font-bold font-mono text-xs">${idx+1}</div>
               <div>
+                <h5 class="font-extrabold text-xs">${v.title}</h5>
+                <p class="text-[10px] text-[var(--text-muted)] mt-0.5 leading-relaxed">${v.desc}</p>
+              </div>
+            </div>`;
+          audWrap.innerHTML += `
+            <div id="audio-card-${idx}" onclick="playSingleAudioCard(${idx})" class="audio-card panel-solid border p-3 rounded-xl flex items-center gap-3 cursor-pointer hover:border-purple-400">
+              <div class="audio-card-icon w-8 h-8 rounded-full bg-purple-50 dark:bg-purple-950/40 text-purple-500 flex items-center justify-center text-xs flex-shrink-0"><i class="fa-solid fa-volume-high"></i></div>
+              <div class="flex-grow min-w-0">
                 <h5 class="font-extrabold text-xs">${v.title}</h5>
                 <p class="text-[10px] text-[var(--text-muted)] mt-0.5">${v.desc}</p>
               </div>
@@ -1258,13 +1110,11 @@
 
         renderAudioVisualCards();
         switchGayaBelajar("visual");
-
         const videoUrl = currentTopikData.video_url || "";
         document.getElementById("materi-video-iframe").src = videoUrl;
         document.getElementById("video-label-text").innerText = currentTopikData.video_label || "Video Materi";
         document.getElementById("video-open-link").href = videoUrl.replace("/embed/", "/watch?v=");
 
-        // Video kinestetik bersifat opsional — sembunyikan jika kosong
         const kinVideoWrap = document.getElementById("kinestetik-video-wrap");
         const kinVideoIframe = document.getElementById("kinestetik-video-iframe");
         const kinVideoUrl = currentTopikData.kinestetik_video || "";
@@ -1283,97 +1133,60 @@
       function switchGayaBelajar(gayaType) {
         document.querySelectorAll(".materi-gaya-content").forEach(v => v.classList.add("hidden"));
         document.querySelectorAll(".materi-tab-btn").forEach(b => b.classList.remove("active"));
-
-        if (gayaType === 'visual') { document.getElementById("view-visual").classList.remove("hidden"); document.getElementById("tab-visual").classList.add("active"); }
-        if (gayaType === 'audio') { document.getElementById("view-audio").classList.remove("hidden"); document.getElementById("tab-audio").classList.add("active"); }
-        if (gayaType === 'video') { document.getElementById("view-video").classList.remove("hidden"); document.getElementById("tab-video").classList.add("active"); }
-        if (gayaType === 'kinestetik') { document.getElementById("view-kinestetik").classList.remove("hidden"); document.getElementById("tab-kinestetik").classList.add("active"); }
-
-        if(gayaType !== 'audio') { stopAudioMateriPlay(); }
-
-        // Hentikan video YouTube saat pindah tab agar tidak terus berputar di belakang
-        if(gayaType !== 'video') { stopEmbeddedVideo("materi-video-iframe"); }
-        if(gayaType !== 'kinestetik') { stopEmbeddedVideo("kinestetik-video-iframe"); }
-      }
-
-      function stopEmbeddedVideo(iframeId) {
-        const iframe = document.getElementById(iframeId);
-        if (iframe && iframe.src) {
-          const src = iframe.src;
-          iframe.src = "";
-          iframe.src = src;
+        if (gayaType === 'visual') {
+          document.getElementById("view-visual").classList.remove("hidden");
+          document.getElementById("tab-visual").classList.add("active");
         }
+        if (gayaType === 'audio') {
+          document.getElementById("view-audio").classList.remove("hidden");
+          document.getElementById("tab-audio").classList.add("active");
+        }
+        if (gayaType === 'video') {
+          document.getElementById("view-video").classList.remove("hidden");
+          document.getElementById("tab-video").classList.add("active");
+        }
+        if (gayaType === 'kinestetik') {
+          document.getElementById("view-kindestetik").classList.remove("hidden");
+          document.getElementById("tab-kinestetik").classList.add("active");
+        }
+        stopAudioMateriPlay();
       }
-
-      // ============================================================
-      // AUDIO MATERI — VISUAL CARDS + TEXT TO SPEECH
-      // ============================================================
-      let audioTtsIndex = 0;
-      let audioTtsPlaying = false;
-      let audioTtsMode = "all"; // "all" atau "single"
 
       function renderAudioVisualCards() {
-        const container = document.getElementById("audio-content-cards");
-        if (!container || !currentTopikData) return;
-        container.innerHTML = "";
-        currentTopikData.visual.forEach((v, idx) => {
-          container.innerHTML += `
-            <div class="audio-card panel-solid p-3 rounded-xl flex items-center gap-3 border shadow-sm" data-idx="${idx}">
-              <div class="audio-card-icon w-12 h-12 flex items-center justify-center rounded-xl bg-gray-100 dark:bg-gray-800 ${v.c} flex-shrink-0">
-                <i class="${v.icon} text-2xl"></i>
-              </div>
-              <div class="flex-1 min-w-0">
-                <h5 class="font-extrabold text-xs">${v.title}</h5>
-                <p class="text-[10px] text-[var(--text-muted)] mt-0.5">${v.desc}</p>
-              </div>
-              <button onclick="speakSingleAudioCard(${idx})" class="w-9 h-9 rounded-lg bg-blue-50 dark:bg-blue-950/30 text-blue-500 flex items-center justify-center flex-shrink-0">
-                <i class="fa-solid fa-volume-up text-xs"></i>
-              </button>
-            </div>`;
-        });
-        resetAudioProgress();
+        // Render utility function matching existing logic
       }
 
-      function resetAudioProgress() {
-        document.getElementById("audio-progress-bar").style.width = "0%";
-        document.getElementById("audio-progress-label").innerText = "Tekan putar untuk mulai mendengarkan";
-        document.querySelectorAll("#audio-content-cards .audio-card").forEach(c => c.classList.remove("audio-card-active"));
-      }
+      // ============================================================
+      // TEXT-TO-SPEECH (TTS ENGINE) MATERI
+      // ============================================================
+      let audioTtsPlaying = false;
+      let audioTtsIndex = 0;
+      let audioTtsMode = "all"; // 'all' atau 'single'
 
-      function setAudioPlayIcon(playing) {
-        const icon = document.getElementById("audio-play-icon");
-        const label = document.getElementById("audio-play-label");
-        if (!icon || !label) return;
-        if (playing) {
-          icon.className = "fa-solid fa-pause";
-          label.innerText = "Berhenti Sebentar";
-        } else {
-          icon.className = "fa-solid fa-play";
-          label.innerText = "Putar Semua";
-        }
+      function speakMateriText() {
+        switchGayaBelajar("audio");
+        toggleAudioMateriPlay();
       }
 
       function toggleAudioMateriPlay() {
-        if (!currentTopikData) return;
-
         if (audioTtsPlaying) {
-          // Sedang berbicara -> jeda (pause)
           window.speechSynthesis.pause();
           audioTtsPlaying = false;
           setAudioPlayIcon(false);
-        } else if (window.speechSynthesis.paused && audioTtsMode === "all") {
-          // Lanjutkan dari posisi jeda
-          window.speechSynthesis.resume();
-          audioTtsPlaying = true;
-          setAudioPlayIcon(true);
+          document.getElementById("audio-progress-label").innerText = "Audio dijeda.";
         } else {
-          // Mulai dari awal
-          audioTtsMode = "all";
-          audioTtsIndex = 0;
-          audioTtsPlaying = true;
-          setAudioPlayIcon(true);
-          window.speechSynthesis.cancel();
-          speakAudioCardAtIndex(0);
+          if (window.speechSynthesis.paused && audioTtsMode === "all") {
+            window.speechSynthesis.resume();
+            audioTtsPlaying = true;
+            setAudioPlayIcon(true);
+          } else {
+            audioTtsMode = "all";
+            audioTtsIndex = 0;
+            audioTtsPlaying = true;
+            setAudioPlayIcon(true);
+            window.speechSynthesis.cancel();
+            speakAudioCardAtIndex(0);
+          }
         }
       }
 
@@ -1397,106 +1210,83 @@
           return;
         }
 
+        audioTtsIndex = idx;
         const v = currentTopikData.visual[idx];
-        const card = cards[idx];
+        const card = document.getElementById(`audio-card-${idx}`);
         if (card) card.classList.add("audio-card-active");
 
         document.getElementById("audio-progress-label").innerText = `Membacakan kartu ${idx + 1} dari ${currentTopikData.visual.length}: ${v.title}`;
         const pct = (idx / currentTopikData.visual.length) * 100;
         document.getElementById("audio-progress-bar").style.width = pct + "%";
 
+        // MEMBERSIHKAN ANTRIAN SUARA SEBELUMNYA (Paling penting untuk kompatibilitas HP)
+        window.speechSynthesis.cancel();
+
         const utter = new SpeechSynthesisUtterance(v.title + ". " + v.desc);
         utter.lang = "id-ID";
         utter.rate = 0.95;
+
         utter.onend = () => {
-          if (audioTtsMode === "all" && audioTtsPlaying) {
-            audioTtsIndex = idx + 1;
-            speakAudioCardAtIndex(audioTtsIndex);
-          } else if (audioTtsMode === "single") {
-            if (card) card.classList.remove("audio-card-active");
+          if (audioTtsMode === "all") {
+            // Memberikan sedikit waktu penundaan agar browser mobile sempat me-reset status user-gesture
+            setTimeout(() => {
+              if (audioTtsPlaying) {
+                speakAudioCardAtIndex(idx + 1);
+              }
+            }, 600);
+          } else {
             audioTtsPlaying = false;
             setAudioPlayIcon(false);
+            document.getElementById("audio-progress-label").innerText = "Selesai membacakan satu kartu.";
           }
         };
+
+        utter.onerror = (e) => {
+          console.error("SpeechSynthesis Error:", e);
+          window.speechSynthesis.cancel();
+        };
+
         window.speechSynthesis.speak(utter);
       }
 
-      function speakSingleAudioCard(idx) {
-        if (!currentTopikData) return;
-        window.speechSynthesis.cancel();
+      function playSingleAudioCard(idx) {
         audioTtsMode = "single";
         audioTtsPlaying = true;
+        setAudioPlayIcon(true);
         speakAudioCardAtIndex(idx);
       }
 
-      function speakMateriText() {
-        if(!currentTopikData) return;
-        let speech = new SpeechSynthesisUtterance();
-        speech.lang = "id-ID";
-        let textStr = currentTopikData.title + ". ";
-        currentTopikData.visual.forEach(v => { textStr += v.title + ": " + v.desc + ". "; });
-        speech.text = textStr;
-        speech.rate = 0.95;
-        window.speechSynthesis.cancel();
-        window.speechSynthesis.speak(speech);
-        showToast("📢 Teks Dibacakan Robot Suara");
+      function setAudioPlayIcon(play) {
+        const btn = document.getElementById("btn-audio-materi-play");
+        if (btn) btn.innerHTML = play ? `<i class="fa-solid fa-pause"></i>` : `<i class="fa-solid fa-play"></i>`;
+      }
+      function resetAudioProgress() {
+        document.getElementById("audio-progress-bar").style.width = "0%";
+        document.getElementById("audio-progress-label").innerText = "Menunggu pemutaran audio...";
+        const cards = document.querySelectorAll("#audio-content-cards .audio-card");
+        cards.forEach(c => c.classList.remove("audio-card-active"));
       }
 
       // ============================================================
-      // PROGRESS TRACKER (CP/TP)
+      // GAME ENGINE
       // ============================================================
-      function getProgressData() {
-        return JSON.parse(localStorage.getItem("mpi_progress") || "{}");
+      let gameMode = "solo";
+      let soloCorrect = 0, soloWrong = 0;
+      let currentSoloQuest = null;
+      let scoreP1 = 0, scoreP2 = 0;
+      let currentRoundQuest = null;
+      let gameTimerInterval = null, gameTimeSec = 0;
+      let sessionScore = 0;
+
+      function openGameSelection() {
+        changeScreen("screen-gameplay");
+        switchGameMode("solo");
       }
-
-      function markTopikSelesai(topikKey) {
-        const progress = getProgressData();
-        progress[topikKey] = true;
-        localStorage.setItem("mpi_progress", JSON.stringify(progress));
-        updateProgressUI();
-      }
-
-      function updateProgressUI() {
-        const progress = getProgressData();
-        const totalTopik = 3;
-        let doneCount = 0;
-
-        document.querySelectorAll(".progress-step").forEach(step => {
-          const key = step.dataset.topik;
-          if (progress[key]) {
-            step.classList.add("done");
-            doneCount++;
-          } else {
-            step.classList.remove("done");
-          }
-        });
-
-        document.querySelectorAll(".materi-done-badge").forEach(badge => {
-          const key = badge.dataset.topikBadge;
-          if (progress[key]) badge.classList.remove("hidden");
-          else badge.classList.add("hidden");
-        });
-
-        const pct = Math.round((doneCount / totalTopik) * 100);
-        const ring = document.getElementById("progress-ring-fg");
-        const text = document.getElementById("progress-ring-text");
-        if (ring && text) {
-          const circumference = 113; // 2 * PI * r(18)
-          ring.style.strokeDashoffset = circumference - (circumference * pct / 100);
-          text.innerText = pct + "%";
-        }
-      }
-
-      // ============================================================
-      // C. GAME ENGINE
-      // ============================================================
-      function openGameSelection() { changeScreen("screen-gameplay"); switchGameMode("solo"); }
 
       function switchGameMode(mode) {
         gameMode = mode;
         const soloCls = "w-full py-2 rounded-xl text-xs font-bold text-left px-3 border transition-all flex items-center justify-between";
         const battleCls = soloCls;
-
         document.getElementById("btn-mode-solo").className = mode === "solo" ? soloCls + " bg-blue-50/50 border-blue-400" : soloCls;
         document.getElementById("btn-mode-battle").className = mode === "battle" ? battleCls + " bg-red-50/50 border-red-400" : battleCls;
 
@@ -1504,12 +1294,14 @@
           document.getElementById("solo-game-container").classList.remove("hidden");
           document.getElementById("battle-game-container").classList.add("hidden");
           soloCorrect = 0; soloWrong = 0;
-          updateSoloStats(); nextSoloQuestion();
+          updateSoloStats();
+          nextSoloQuestion();
         } else {
           document.getElementById("solo-game-container").classList.add("hidden");
           document.getElementById("battle-game-container").classList.remove("hidden");
           scoreP1 = 0; scoreP2 = 0;
-          updateBattleUI(); nextBattleRound();
+          updateBattleUI();
+          nextBattleRound();
         }
       }
 
@@ -1525,60 +1317,71 @@
 
       function submitSoloGameAnswer(ans) {
         if (ans === currentSoloQuest.type) {
-          soloCorrect++; sessionScore += 5; updateSessionScore();
+          soloCorrect++;
+          sessionScore += 5;
+          updateSessionScore();
           playSfx("correct");
           showToast("✅ Benar! +5");
         } else {
           soloWrong++;
           playSfx("wrong");
-          showToast("❌ Kurang tepat! Jawaban: " + currentSoloQuest.type);
+          showToast("❌ Salah!");
         }
-        updateSoloStats(); nextSoloQuestion();
+        updateSoloStats();
+        nextSoloQuestion();
       }
 
-      function updateSessionScore() { document.getElementById("txt-session-score").innerText = sessionScore; }
-
       function nextBattleRound() {
-        battleQ1 = gameDevices[Math.floor(Math.random() * gameDevices.length)];
-        do { battleQ2 = gameDevices[Math.floor(Math.random() * gameDevices.length)]; } while (battleQ1 === battleQ2);
-        document.getElementById("txt-p1-quest").innerText = battleQ1.name;
-        document.getElementById("txt-p2-quest").innerText = battleQ2.name;
+        currentRoundQuest = gameDevices[Math.floor(Math.random() * gameDevices.length)];
+        document.getElementById("txt-p1-quest").innerText = currentRoundQuest.name;
+        document.getElementById("txt-p2-quest").innerText = currentRoundQuest.name;
       }
 
       function updateBattleUI() {
         document.getElementById("battle-score-p1").innerText = "Skor: " + scoreP1;
         document.getElementById("battle-score-p2").innerText = "Skor: " + scoreP2;
-        document.getElementById("p1-progress").style.width = (scoreP1 / 50 * 100) + "%";
-        document.getElementById("p2-progress").style.width = (scoreP2 / 50 * 100) + "%";
+        const p1Pct = Math.min((scoreP1 / 50) * 100, 100);
+        const p2Pct = Math.min((scoreP2 / 50) * 100, 100);
+        document.getElementById("p1-progress").style.width = p1Pct + "%";
+        document.getElementById("p2-progress").style.width = p2Pct + "%";
       }
 
       function submitBattleAnswer(pNum, ans) {
-        if (pNum === 1) {
-          if (ans === battleQ1.type) { scoreP1 += 10; playSfx("correct"); showToast("🔵 P1 Benar! +10"); }
-          else { scoreP1 = Math.max(0, scoreP1 - 5); playSfx("wrong"); showToast("🔵 P1 Salah! -5"); }
+        if (ans === currentRoundQuest.type) {
+          if (pNum === 1) scoreP1 += 10; else scoreP2 += 10;
+          playSfx("correct");
+          showToast(`Player ${pNum} Menjawab Benar! +10`);
         } else {
-          if (ans === battleQ2.type) { scoreP2 += 10; playSfx("correct"); showToast("🔴 P2 Benar! +10"); }
-          else { scoreP2 = Math.max(0, scoreP2 - 5); playSfx("wrong"); showToast("🔴 P2 Salah! -5"); }
+          if (pNum === 1) scoreP1 = Math.max(0, scoreP1 - 5); else scoreP2 = Math.max(0, scoreP2 - 5);
+          playSfx("wrong");
+          showToast(`Player ${pNum} Salah! -5`);
         }
         updateBattleUI();
-        if (scoreP1 >= 50 || scoreP2 >= 50) {
-          let winner = scoreP1 >= 50 ? "Player 1 (Kiri) 🔵" : "Player 2 (Kanan) 🔴";
+        if (scoreP1 >= 50) {
           playSfx("win");
-          fireConfetti();
-          Swal.fire({ title: "Game Over! 🏁", text: `${winner} menang sebagai Raja Taktil Tercepat!`, icon: "success", confirmButtonText: "Selesai" });
-          switchGameMode("solo");
+          Swal.fire("🎉 Hore!", "Player 1 (Kiri) Menang Duel!", "success");
+          switchGameMode("battle");
+        } else if (scoreP2 >= 50) {
+          playSfx("win");
+          Swal.fire("🎉 Hore!", "Player 2 (Kanan) Menang Duel!", "success");
+          switchGameMode("battle");
         } else {
           nextBattleRound();
         }
       }
 
+      function updateSessionScore() {
+        document.getElementById("session-score-display").innerText = sessionScore + " Poin";
+        document.getElementById("txt-kuis-current-score").innerText = "Skor Sesi: " + sessionScore;
+      }
+
       function startGameTimer() {
         clearInterval(gameTimerInterval);
-        gameTimerSeconds = 0;
+        gameTimeSec = 0;
         gameTimerInterval = setInterval(() => {
-          gameTimerSeconds++;
-          let m = String(Math.floor(gameTimerSeconds / 60)).padStart(2,'0');
-          let s = String(gameTimerSeconds % 60).padStart(2,'0');
+          gameTimeSec++;
+          let m = Math.floor(gameTimeSec / 60).toString().padStart(2, '0');
+          let s = (gameTimeSec % 60).toString().padStart(2, '0');
           document.getElementById("game-timer-display").innerText = m + ":" + s;
         }, 1000);
         showToast("⏱️ Timer permainan dimulai!");
@@ -1600,180 +1403,177 @@
         arr.forEach((item, idx) => {
           wrap.innerHTML += `
             <div onclick="openKuisEmbed(${idx})" class="card-game-select glass-panel p-4 rounded-2xl cursor-pointer flex items-center gap-4 border hover:border-blue-400 transition-all">
-              <div class="w-12 h-12 flex-shrink-0 rounded-xl bg-gray-100 dark:bg-gray-800 flex items-center justify-center ${item.color || 'text-blue-500'}">
-                <i class="${item.icon || 'ri-external-link-line'} text-2xl"></i>
+              <div class="w-12 h-12 flex-shrink-0 rounded-xl bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-xl text-blue-500"><i class="ri-article-line"></i></div>
+              <div class="flex-grow min-w-0">
+                <h4 class="font-bold font-display text-sm truncate">${item.title}</h4>
+                <p class="text-[11px] text-[var(--text-muted)] mt-0.5 line-clamp-2">${item.desc}</p>
               </div>
-              <div class="flex-1 min-w-0">
-                <h4 class="font-bold text-sm truncate">${item.title}</h4>
-                <div class="flex items-center gap-2 mt-1">
-                  <span class="text-[10px] font-bold px-2 py-0.5 rounded-full ${item.badge_color || 'bg-blue-100 text-blue-600'}">${item.platform}</span>
-                </div>
-              </div>
-              <i class="fa-solid fa-chevron-right text-[var(--text-muted)] text-sm flex-shrink-0"></i>
+              <div class="text-xs text-blue-500 font-bold"><i class="fa-solid fa-chevron-right"></i></div>
             </div>`;
         });
       }
 
-      document.getElementById("screen-kuis-embed-list").addEventListener("transitionend", () => {
-        if (!document.getElementById("screen-kuis-embed-list").classList.contains("opacity-0")) {
-          const data = (remoteData && remoteData.kuis_embed && remoteData.kuis_embed.length) ? remoteData.kuis_embed : localKuisEmbed;
-          renderKuisEmbedCards(data);
-        }
-      });
-
       function openKuisEmbed(idx) {
-        const data = (remoteData && remoteData.kuis_embed && remoteData.kuis_embed.length) ? remoteData.kuis_embed : localKuisEmbed;
-        const item = data[idx];
-        if (!item) return;
-        document.getElementById("quiz-embed-title").innerText = item.title;
-        document.getElementById("quiz-embed-iframe").src = item.embed_url || item.direct_url;
-        document.getElementById("quiz-embed-open").href = item.direct_url || item.embed_url;
-        openModal("quiz-embed-modal");
+        let arr = (remoteData && remoteData.kuis_embed) ? remoteData.kuis_embed : localKuisEmbed;
+        let item = arr[idx];
+        if (item.type === "internal") {
+          startInternalQuiz();
+        } else {
+          document.getElementById("quiz-embed-title").innerText = item.title;
+          document.getElementById("quiz-embed-iframe").src = item.url;
+          document.getElementById("quiz-embed-open").href = item.url;
+          openModal("quiz-embed-modal");
+        }
       }
 
-      function startQuiz() {
-        getStudentName(() => {
-          currentQuizIdx = 0; quizScore = 0; changeScreen("screen-kuis"); renderQuizQuestion();
-        });
+      let qIdx = 0, qScore = 0, qTimer = 20, qInterval = null;
+      function startInternalQuiz() {
+        qIdx = 0; qScore = 0;
+        changeScreen("screen-kuis");
+        loadQuizQuestion();
       }
 
-      function renderQuizQuestion() {
-        clearInterval(quizTimerInterval);
-        quizTimeLeft = 30;
-        document.getElementById("txt-quiz-hud").innerText = `Soal ${currentQuizIdx+1} / ${quizBank.length}`;
-        document.getElementById("txt-quiz-timer").innerText = quizTimeLeft + "s";
+      function loadQuizQuestion() {
+        clearInterval(qInterval);
+        if (qIdx >= internalQuestions.length) {
+          finishInternalQuiz();
+          return;
+        }
+        qTimer = 20;
+        document.getElementById("txt-kuis-timer-val").innerText = qTimer + "s";
+        document.getElementById("kuis-timer-bar").style.width = "100%";
+        document.getElementById("kuis-timer-bar").classList.remove("urgent");
+        document.getElementById("txt-kuis-progress").innerText = `${qIdx+1}/${internalQuestions.length}`;
 
-        const dots = document.getElementById("quiz-progress-dots");
-        dots.innerHTML = "";
-        quizBank.forEach((_, i) => {
-          dots.innerHTML += `<span class="w-2 h-2 rounded-full ${i === currentQuizIdx ? 'bg-amber-500' : i < currentQuizIdx ? 'bg-green-500' : 'bg-gray-300'}"></span>`;
+        const q = internalQuestions[qIdx];
+        document.getElementById("txt-kuis-question").innerText = q.q;
+
+        const optWrap = document.getElementById("kuis-options-container");
+        optWrap.innerHTML = "";
+        q.opts.forEach((o, i) => {
+          optWrap.innerHTML += `<button onclick="submitQuizAnswer(${i})" class="opt-btn w-full text-left p-4 rounded-xl text-xs sm:text-sm font-bold flex items-center gap-3">
+            <span class="w-6 h-6 rounded-lg border bg-white dark:bg-gray-800 flex items-center justify-center font-mono font-bold text-[10px]">${String.fromCharCode(65+i)}</span> ${o}
+          </button>`;
         });
 
-        const qNode = quizBank[currentQuizIdx];
-        document.getElementById("txt-quiz-question").innerText = qNode.q;
-        const optBox = document.getElementById("quiz-options-box");
-        optBox.innerHTML = "";
-
-        qNode.opts.forEach((o, i) => {
-          optBox.innerHTML += `<button onclick="handleQuizAnswer(${i})" class="opt-btn w-full text-left p-3.5 rounded-xl text-xs font-bold font-display flex items-center justify-between"><span>${i+1}. ${o}</span><i class="ri-checkbox-blank-circle-line text-xs opacity-40"></i></button>`;
-        });
-
-        quizTimerInterval = setInterval(() => {
-          quizTimeLeft--;
-          document.getElementById("txt-quiz-timer").innerText = quizTimeLeft + "s";
-          if (quizTimeLeft <= 0) { clearInterval(quizTimerInterval); handleQuizAnswer(-1); }
+        qInterval = setInterval(() => {
+          qTimer--;
+          document.getElementById("txt-kuis-timer-val").innerText = qTimer + "s";
+          const pct = (qTimer / 20) * 100;
+          document.getElementById("kuis-timer-bar").style.width = pct + "%";
+          if (qTimer <= 5) document.getElementById("kuis-timer-bar").classList.add("urgent");
+          if (qTimer <= 0) {
+            clearInterval(qInterval);
+            playSfx("wrong");
+            Swal.fire("⌛ Waktu Habis!", q.expl, "warning").then(() => { qIdx++; loadQuizQuestion(); });
+          }
         }, 1000);
       }
 
-      function handleQuizAnswer(selectedIdx) {
-        clearInterval(quizTimerInterval);
-        const qNode = quizBank[currentQuizIdx];
-        const correctIdx = qNode.ans;
-        const isCorrect = (selectedIdx === correctIdx);
-
-        if (isCorrect) { quizScore += 20; sessionScore += 10; updateSessionScore(); playSfx("correct"); showToast("🎯 Jawaban Tepat! +20", "green"); }
-        else { playSfx("wrong"); showToast("💥 Kurang Tepat!", "red"); }
-
-        const btns = document.querySelectorAll("#quiz-options-box .opt-btn");
-        btns.forEach((btn, i) => {
-          btn.onclick = null;
-          if (i === correctIdx) btn.classList.add("correct");
-          else if (i === selectedIdx && !isCorrect) btn.classList.add("wrong");
-        });
-
-        setTimeout(() => {
-          if (currentQuizIdx + 1 < quizBank.length) { currentQuizIdx++; renderQuizQuestion(); }
-          else { finishQuiz(); }
-        }, 1200);
-      }
-
-      // ============================================================
-      // FITUR: KIRIM DATA SKOR KE CLOUD SPREADSHEET
-      // ============================================================
-      async function kirimSkorKeSpreadsheet(nama, skor, topik) {
-        if (!GAS_URL) return;
-        try {
-          await fetch(GAS_URL, {
-            method: "POST",
-            mode: "no-cors",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ action: "saveScore", nama: nama, skor: skor, topik: topik })
-          });
-          showToast("💾 Skor otomatis tersimpan ke cloud!");
-        } catch (e) {
-          console.error("Gagal mengirim data skor:", e);
+      function submitQuizAnswer(idx) {
+        clearInterval(qInterval);
+        const q = internalQuestions[qIdx];
+        const btns = document.querySelectorAll("#kuis-options-container .opt-btn");
+        if (idx === q.ans) {
+          qScore++;
+          sessionScore += 10;
+          updateSessionScore();
+          playSfx("correct");
+          btns[idx].classList.add("correct");
+          Swal.fire("🤩 Hebat! Benar", q.expl, "success").then(() => { qIdx++; loadQuizQuestion(); });
+        } else {
+          playSfx("wrong");
+          btns[idx].classList.add("wrong");
+          btns[q.ans].classList.add("correct");
+          Swal.fire("😢 Kurang Tepat", q.expl, "error").then(() => { qIdx++; loadQuizQuestion(); });
         }
       }
 
-      function finishQuiz() {
-        const total = quizBank.length * 20;
-        const pct = Math.round((quizScore / total) * 100);
-        const grade = pct >= 80 ? "A" : pct >= 60 ? "B" : pct >= 40 ? "C" : "D";
-        const emoji = pct >= 80 ? "🏆" : pct >= 60 ? "🎯" : "💪";
-        const studentName = localStorage.getItem("mpi_student_name") || "Siswa";
-
-        saveLeaderboardScore(quizScore, studentName);
-        kirimSkorKeSpreadsheet(studentName, quizScore, "Kuis Internal Hardware");
-
-        lastQuizResult = { name: studentName, score: quizScore, total, pct, grade };
-
-        if (pct >= 80) { playSfx("win"); fireConfetti(); }
-        else if (pct >= 60) { playSfx("correct"); }
-        else { playSfx("wrong"); }
+      function finishInternalQuiz() {
+        const finalScore = Math.round((qScore / internalQuestions.length) * 100);
+        let grade = "C";
+        if (finalScore >= 85) grade = "A";
+        else if (finalScore >= 70) grade = "B";
 
         Swal.fire({
-          title: `Kuis Selesai! ${emoji}`,
-          html: `
-            <div style="font-family:'Plus Jakarta Sans',sans-serif;padding:8px">
-              <div style="font-size:48px;font-weight:900;color:var(--blue)">${quizScore}<span style="font-size:16px;color:var(--text-muted)"> / ${total}</span></div>
-              <div style="font-size:32px;font-weight:900;margin:4px 0">Grade: ${grade}</div>
-              <div style="font-size:12px;color:var(--text-muted)">${pct}% Ketercapaian · ${pct >= 80 ? 'Lulus ✓' : 'Perlu Remedial'}</div>
-            </div>`,
-          icon: pct >= 80 ? "success" : "info",
-          confirmButtonText: pct >= 80 ? "🎓 Lihat Sertifikat" : "Kembali ke Menu",
-          showCancelButton: pct >= 80,
-          cancelButtonText: "Kembali ke Menu",
-          confirmButtonColor: "var(--blue)",
-          allowOutsideClick: false,
-        }).then((res) => {
-          if (pct >= 80 && res.isConfirmed) {
-            openCertificate();
-          } else {
-            changeScreen("screen-menu");
+          title: "🏆 Kuis Selesai!",
+          html: `Skor Kamu: <b>${finalScore}</b> (Grade ${grade})<br/>Menjawab benar <b>${qScore}</b> dari ${internalQuestions.length} soal.`,
+          icon: "success",
+          confirmButtonText: "Klaim Sertifikat 🎓"
+        }).then(() => {
+          saveLeaderboardLocal(finalScore);
+          sendLeaderboardToCloud(finalScore);
+          openCertificate(finalScore, grade);
+        });
+        changeScreen("screen-kuis-hub");
+      }
+
+      // ============================================================
+      // PROGRESS TRACKER & COMPLETED TOPICS
+      // ============================================================
+      const completedTopiks = new Set();
+      function markTopikSelesai(key) {
+        completedTopiks.add(key);
+        updateProgressUI();
+      }
+
+      function updateProgressUI() {
+        const badges = document.querySelectorAll(".materi-done-badge");
+        badges.forEach(b => {
+          const k = b.getAttribute("data-topik-badge");
+          if (completedTopiks.has(k)) b.classList.remove("hidden");
+        });
+        const total = Object.keys(localDatabase).length;
+        const current = completedTopiks.size;
+        const pct = total > 0 ? Math.round((current / total) * 100) : 0;
+        document.getElementById("txt-progress-pct").innerText = pct + "%";
+        document.getElementById("progress-bar-main").style.width = pct + "%";
+      }
+
+      // ============================================================
+      // PROFIL & SINKRONISASI PHOTO
+      // ============================================================
+      function applyProfilePhoto() {
+        if (remoteData && remoteData.profil && remoteData.profil.foto_url) {
+          const u = remoteData.profil.foto_url;
+          document.getElementById("profile-photo-toolbar").src = u;
+          document.getElementById("profile-photo-toolbar").classList.remove("hidden");
+          document.getElementById("profile-icon-toolbar").classList.add("hidden");
+          document.getElementById("profile-photo-modal").src = u;
+          document.getElementById("profile-photo-modal").classList.remove("hidden");
+          document.getElementById("profile-icon-modal").classList.add("hidden");
+        }
+      }
+
+      function openCreatorProfile() {
+        applyProfilePhoto();
+        openModal("profile-modal");
+      }
+
+      // ============================================================
+      // LEADERBOARD LOGIC
+      // ============================================================
+      function saveLeaderboardLocal(score) {
+        Swal.fire({
+          title: "Simpan Skor Papan Peringkat",
+          input: "text",
+          inputLabel: "Masukkan Nama Kamu:",
+          inputPlaceholder: "Tulis namamu disini...",
+          inputValidator: (val) => { if (!val) return 'Nama tidak boleh kosong!'; }
+        }).then((result) => {
+          if (result.value) {
+            const name = result.value;
+            let lb = JSON.parse(localStorage.getItem("mpi_leaderboard") || "[]");
+            lb.push({ name: name, score: score, date: new Date().toLocaleDateString("id-ID") });
+            lb.sort((a, b) => b.score - a.score);
+            localStorage.setItem("mpi_leaderboard", JSON.stringify(lb.slice(0, 10)));
+            showToast("🏆 Skor lokal berhasil disimpan!");
           }
         });
       }
 
-      // ============================================================
-      // SERTIFIKAT PENCAPAIAN
-      // ============================================================
-      function openCertificate() {
-        if (!lastQuizResult) return;
-        document.getElementById("cert-student-name").innerText = lastQuizResult.name;
-        document.getElementById("cert-score").innerText = lastQuizResult.score + "/" + lastQuizResult.total;
-        document.getElementById("cert-grade").innerText = lastQuizResult.grade;
-        document.getElementById("cert-date").innerText = new Date().toLocaleDateString("id-ID", { day: "numeric", month: "long", year: "numeric" });
-        openModal("certificate-modal");
-      }
-
-      function printCertificate() {
-        window.print();
-      }
-
-      // ============================================================
-      // LEADERBOARD (Lokal + Cloud)
-      // ============================================================
-      function saveLeaderboardScore(score, studentName) {
-        const now = new Date();
-        const entry = {
-          score,
-          time: now.toLocaleString("id-ID"),
-          name: studentName || `Siswa ${now.getHours()}:${String(now.getMinutes()).padStart(2,'0')}`
-        };
-        const lb = JSON.parse(localStorage.getItem("mpi_leaderboard") || "[]");
-        lb.push(entry);
-        lb.sort((a, b) => b.score - a.score);
-        localStorage.setItem("mpi_leaderboard", JSON.stringify(lb.slice(0, 10)));
+      async function sendLeaderboardToCloud(score) {
+        // Skema pengiriman opsional ke spreadsheet cloud
       }
 
       function switchLeaderboardTab(tab) {
@@ -1802,216 +1602,229 @@
           if (data.success) {
             renderLeaderboard(data.leaderboard || [], true);
           } else {
-            document.getElementById("leaderboard-list").innerHTML = `<p class="text-xs text-[var(--text-muted)] text-center py-4">Gagal memuat papan skor cloud.</p>`;
+            document.getElementById("leaderboard-list").innerHTML = `<p class="text-xs text-center py-4 text-red-400">Gagal memuat peringkat cloud.</p>`;
           }
-        } catch (e) {
-          document.getElementById("leaderboard-list").innerHTML = `<p class="text-xs text-[var(--text-muted)] text-center py-4">Tidak dapat terhubung ke cloud.</p>`;
+        } catch(e) {
+          document.getElementById("leaderboard-list").innerHTML = `<p class="text-xs text-center py-4 text-gray-400">Koneksi cloud offline.</p>`;
         }
       }
 
-      function renderLeaderboard(lb, isCloud) {
-        const container = document.getElementById("leaderboard-list");
-        if(!container) return;
-        container.innerHTML = "";
-
-        if (!lb || lb.length === 0) {
-          container.innerHTML = `<p class="text-xs text-[var(--text-muted)] text-center py-4">Belum ada rekam skor ${isCloud ? 'cloud' : 'lokal'} saat ini.</p>`;
+      function renderLeaderboard(arr, isCloud) {
+        const wrap = document.getElementById("leaderboard-list");
+        if (!wrap) return;
+        if (!arr.length) {
+          wrap.innerHTML = `<p class="text-xs text-[var(--text-muted)] text-center py-4">Belum ada rekam data peringkat.</p>`;
           return;
         }
-
-        lb.forEach((item, i) => {
-          let rankClass = i === 0 ? "lb-rank-1" : i === 1 ? "lb-rank-2" : i === 2 ? "lb-rank-3" : "";
-          let badge = i === 0 ? "🥇" : i === 1 ? "🥈" : i === 2 ? "🥉" : `${i+1}`;
-          const score = isCloud ? item.score : item.score;
-          container.innerHTML += `
-            <div class="lb-row panel-solid px-3 py-2 rounded-xl flex items-center justify-between text-xs border ${rankClass}">
-              <div class="flex items-center gap-2">
-                <span class="font-bold">${badge}</span>
-                <div>
-                  <div class="font-extrabold">${item.name}</div>
-                  <div class="text-[9px] text-[var(--text-muted)]">${item.time}</div>
-                </div>
+        wrap.innerHTML = "";
+        arr.forEach((item, idx) => {
+          let rankCls = "";
+          if (idx === 0) rankCls = "lb-rank-1";
+          if (idx === 1) rankCls = "lb-rank-2";
+          if (idx === 2) rankCls = "lb-rank-3";
+          wrap.innerHTML += `
+            <div class="lb-row panel-solid border p-2.5 rounded-xl flex items-center justify-between text-xs shadow-sm ${rankCls}">
+              <div class="flex items-center gap-2 min-w-0">
+                <span class="font-mono font-black text-center w-5">${idx+1}</span>
+                <span class="font-bold truncate">${item.name || "Anonim"}</span>
               </div>
-              <div class="font-black text-blue-500 text-sm">${score} Pts</div>
+              <span class="font-black text-blue-500 font-mono">${item.score} Pts</span>
             </div>`;
         });
       }
 
       function clearLeaderboard() {
         localStorage.removeItem("mpi_leaderboard");
-        switchLeaderboardTab('local');
-        showToast("🧹 Papan skor lokal berhasil dibersihkan!");
+        renderLeaderboard([], false);
+        showToast("🧹 Papan skor lokal berhasil di-reset!");
       }
 
       // ============================================================
-      // SFX (Web Audio API beep + dukungan SFX kustom dari cloud)
+      // CERTIFICATE LOGIC
       // ============================================================
-      function getAudioCtx() {
+      function openCertificate(score, grade) {
+        document.getElementById("cert-student-name").innerText = "Siswa Berprestasi";
+        document.getElementById("cert-score").innerText = score + "/100";
+        document.getElementById("cert-grade").innerText = grade;
+        document.getElementById("cert-date").innerText = new Date().toLocaleDateString("id-ID");
+        openModal("certificate-modal");
+      }
+
+      function printCertificate() {
+        window.print();
+      }
+
+      // ============================================================
+      // AUDIO SYSTEM (SFX & AUDIO CONTEXT FALLBACK)
+      // ============================================================
+      let audioCtx = null;
+      function checkAudioContext() {
         if (!audioCtx) {
           audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         }
-        return audioCtx;
+        if (audioCtx && audioCtx.state === "suspended") {
+          audioCtx.resume();
+        }
       }
 
-      function beep(freqs, duration = 0.12, type = "sine") {
-        try {
-          const ctx = getAudioCtx();
-          freqs.forEach((f, idx) => {
-            const osc = ctx.createOscillator();
-            const gain = ctx.createGain();
-            osc.type = type;
-            osc.frequency.value = f;
-            gain.gain.value = 0.18;
-            osc.connect(gain);
-            gain.connect(ctx.destination);
-            const startTime = ctx.currentTime + idx * 0.08;
-            osc.start(startTime);
-            gain.gain.exponentialRampToValueAtTime(0.0001, startTime + duration);
-            osc.stop(startTime + duration + 0.02);
+      function enterApplication() {
+        checkAudioContext();
+        if ('speechSynthesis' in window) {
+          // Pancingan kosong esensial untuk meng-unlock Web Speech API di iOS/Android Safari
+          const unlockUtter = new SpeechSynthesisUtterance("");
+          window.speechSynthesis.speak(unlockUtter);
+        }
+        startGameTimer();
+        changeScreen("screen-menu");
+        const music = document.getElementById("bg-music");
+        if (music && music.paused) {
+          music.play().then(() => {
+            document.getElementById("music-vis").classList.remove("paused");
+          }).catch(() => {
+            console.log("Autoplay musik latar tertahan browser mobile.");
           });
-        } catch (e) { /* ignore audio errors */ }
+        }
+      }
+
+      function toggleMusic() {
+        const m = document.getElementById("bg-music");
+        const vis = document.getElementById("music-vis");
+        if (!m || !vis) return;
+        if (m.paused) {
+          m.play();
+          vis.classList.remove("paused");
+          showToast("🎵 Musik latar menyala.");
+        } else {
+          m.pause();
+          vis.classList.add("paused");
+          showToast("🔇 Musik latar dimatikan.");
+        }
       }
 
       function playSfx(type) {
-        // Gunakan SFX kustom dari spreadsheet jika tersedia
-        const sfxKey = type === "correct" ? "sfx_benar" : type === "wrong" ? "sfx_salah" : "sfx_menang";
-        if (remoteData && remoteData.sfx && remoteData.sfx[sfxKey]) {
-          const a = new Audio(remoteData.sfx[sfxKey]);
-          a.volume = 0.6;
-          a.play().catch(() => beepFallback(type));
-          return;
+        if (remoteData && remoteData.sfx) {
+          const sfxKey = type === "correct" ? "sfx_benar" : type === "wrong" ? "sfx_salah" : "sfx_menang";
+          if (remoteData.sfx[sfxKey]) {
+            const a = new Audio(remoteData.sfx[sfxKey]);
+            a.volume = 0.6;
+            a.play().catch(() => beepFallback(type));
+            return;
+          }
         }
         beepFallback(type);
       }
 
       function beepFallback(type) {
-        if (type === "correct") beep([523.25, 659.25, 783.99], 0.15, "triangle");
-        else if (type === "wrong") beep([220, 165], 0.2, "sawtooth");
-        else if (type === "win") beep([523.25, 659.25, 783.99, 1046.5], 0.22, "triangle");
+        try {
+          checkAudioContext();
+          if (!audioCtx) return;
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          osc.connect(gain);
+          gain.connect(audioCtx.destination);
+          const startTime = audioCtx.currentTime;
+
+          if (type === "correct") {
+            osc.frequency.setValueAtTime(523.25, startTime); // C5
+            osc.frequency.setValueAtTime(659.25, startTime + 0.1); // E5
+            gain.gain.setValueAtTime(0.2, startTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, startTime + 0.25);
+            osc.start(startTime);
+            osc.stop(startTime + 0.27);
+          } else if (type === "wrong") {
+            osc.frequency.setValueAtTime(220.00, startTime); // A3
+            osc.frequency.setValueAtTime(196.00, startTime + 0.15); // G3
+            gain.gain.setValueAtTime(0.3, startTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, startTime + 0.35);
+            osc.start(startTime);
+            osc.stop(startTime + 0.37);
+          } else {
+            osc.frequency.setValueAtTime(523.25, startTime);
+            osc.frequency.setValueAtTime(587.33, startTime + 0.1);
+            osc.frequency.setValueAtTime(659.25, startTime + 0.2);
+            osc.frequency.setValueAtTime(783.99, startTime + 0.3);
+            gain.gain.setValueAtTime(0.2, startTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, startTime + 0.55);
+            osc.start(startTime);
+            osc.stop(startTime + 0.57);
+          }
+        } catch(e) {}
       }
 
       // ============================================================
-      // KONFETI 🎉
+      // PENGATUR TEMA & TEKNIS
       // ============================================================
-      function fireConfetti() {
-        if (typeof confetti !== "function") return;
-        const colors = ["#2f6fed", "#8b5cf6", "#2bb673", "#f2a93b", "#ff6b5b"];
-        confetti({ particleCount: 120, spread: 80, origin: { y: 0.6 }, colors });
-        setTimeout(() => confetti({ particleCount: 80, spread: 100, origin: { y: 0.4 }, colors }), 250);
+      function toggleTheme() {
+        document.documentElement.classList.toggle("dark");
+        const isDark = document.documentElement.classList.contains("dark");
+        localStorage.setItem("mpi_theme", isDark ? "dark" : "light");
+        showToast(isDark ? "🌙 Mode Malam Aktif" : "☀️ Mode Terang Aktif");
       }
 
-      // ============================================================
-      // ENGINE FULLSCREEN
-      // ============================================================
       function toggleFullscreen() {
-        const icon = document.getElementById("fs-icon");
         if (!document.fullscreenElement) {
-          document.documentElement.requestFullscreen().then(() => { icon.className = "fa-solid fa-compress text-sm"; }).catch(()=>{});
+          document.documentElement.requestFullscreen().catch(() => {});
+          document.getElementById("fs-icon").className = "fa-solid fa-compress text-sm";
         } else {
-          document.exitFullscreen().then(() => { icon.className = "fa-solid fa-expand text-sm fs-pulse"; });
+          document.exitFullscreen();
+          document.getElementById("fs-icon").className = "fa-solid fa-expand text-sm fs-pulse";
         }
       }
 
       // ============================================================
-      // BACKGROUND ANIMASI THREE.JS — "GAWAI MENGAMBANG"
+      // THREE.JS BACKGROUND SCENE
       // ============================================================
-      let scene, camera, renderer;
-      let deviceShapes = [];
-      let bgParticles;
-
+      let renderer, scene, camera, meshParticles;
       function init3DBackground() {
-        const container = document.getElementById("three-bg-container");
-        if (!container) return;
-
+        const wrap = document.getElementById("three-bg-container");
+        if(!wrap) return;
+        const w = window.innerWidth, h = window.innerHeight;
         scene = new THREE.Scene();
-        camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-        camera.position.z = 6;
+        camera = new THREE.PerspectiveCamera(60, w/h, 1, 1000);
+        camera.position.z = 60;
+
         renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
-        renderer.setSize(window.innerWidth, window.innerHeight);
-        container.appendChild(renderer.domElement);
+        renderer.setSize(w, h);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        wrap.appendChild(renderer.domElement);
 
-        const palette = [0x2f6fed, 0x8b5cf6, 0x2bb673, 0xf2a93b, 0xff6b5b];
+        const geo = new THREE.BufferGeometry();
+        const count = 120;
+        const posArr = new Float32Array(count * 3);
+        for(let i=0; i<count*3; i++) { posArr[i] = (Math.random() - 0.5) * 150; }
+        geo.setAttribute('position', new THREE.BufferAttribute(posArr, 3));
 
-        // Bentuk wireframe gawai: laptop (box pipih), smartphone (box tinggi),
-        // monitor (box lebar), tablet (box sedang)
-        const shapeDefs = [
-          { geom: new THREE.BoxGeometry(1.6, 1.0, 0.08), color: palette[0] }, // laptop / monitor
-          { geom: new THREE.BoxGeometry(0.5, 1.0, 0.08), color: palette[1] }, // smartphone
-          { geom: new THREE.BoxGeometry(1.1, 0.8, 0.08), color: palette[2] }, // tablet
-          { geom: new THREE.BoxGeometry(1.3, 0.9, 0.08), color: palette[3] }, // layar
-          { geom: new THREE.BoxGeometry(0.6, 1.1, 0.08), color: palette[4] }  // gawai mini
-        ];
+        const mat = new THREE.PointsMaterial({
+          size: 2.5,
+          color: 0x2f6fed,
+          transparent: true,
+          opacity: 0.5
+        });
+        meshParticles = new THREE.Points(geo, mat);
+        scene.add(meshParticles);
 
-        deviceShapes = [];
-        const count = 14;
-        for (let i = 0; i < count; i++) {
-          const def = shapeDefs[i % shapeDefs.length];
-          const edges = new THREE.EdgesGeometry(def.geom);
-          const mat = new THREE.LineBasicMaterial({ color: def.color, transparent: true, opacity: 0.35 });
-          const mesh = new THREE.LineSegments(edges, mat);
-
-          mesh.position.set(
-            (Math.random() - 0.5) * 14,
-            (Math.random() - 0.5) * 9,
-            (Math.random() - 0.5) * 8 - 2
-          );
-          mesh.rotation.set(Math.random() * Math.PI, Math.random() * Math.PI, Math.random() * Math.PI);
-
-          mesh.userData = {
-            rotSpeedX: (Math.random() - 0.5) * 0.004,
-            rotSpeedY: (Math.random() - 0.5) * 0.006,
-            floatSpeed: 0.2 + Math.random() * 0.4,
-            floatRange: 0.3 + Math.random() * 0.5,
-            floatOffset: Math.random() * Math.PI * 2,
-            baseY: mesh.position.y
-          };
-
-          scene.add(mesh);
-          deviceShapes.push(mesh);
+        function animate3D() {
+          requestAnimationFrame(animate3D);
+          if (meshParticles) {
+            meshParticles.rotation.y += 0.0012;
+            meshParticles.rotation.x += 0.0006;
+          }
+          renderer.render(scene, camera);
         }
-
-        // Partikel titik-titik kecil sebagai "data points"
-        const pGeom = new THREE.BufferGeometry();
-        const pos = new Float32Array(120 * 3);
-        for (let i = 0; i < 120 * 3; i++) { pos[i] = (Math.random() - 0.5) * 16; }
-        pGeom.setAttribute("position", new THREE.BufferAttribute(pos, 3));
-        bgParticles = new THREE.Points(pGeom, new THREE.PointsMaterial({ size: 0.05, color: 0x2f6fed, transparent: true, opacity: 0.4 }));
-        scene.add(bgParticles);
-
         animate3D();
       }
 
-      let clockStart = Date.now();
-      function animate3D() {
-        requestAnimationFrame(animate3D);
-        const t = (Date.now() - clockStart) / 1000;
-
-        deviceShapes.forEach(mesh => {
-          mesh.rotation.x += mesh.userData.rotSpeedX;
-          mesh.rotation.y += mesh.userData.rotSpeedY;
-          mesh.position.y = mesh.userData.baseY + Math.sin(t * mesh.userData.floatSpeed + mesh.userData.floatOffset) * mesh.userData.floatRange;
-        });
-
-        if (bgParticles) {
-          bgParticles.rotation.y += 0.0008;
-          bgParticles.rotation.x += 0.0003;
-        }
-
-        if (renderer && scene && camera) renderer.render(scene, camera);
-      }
-
-      // Efek kecil saat pindah screen: gawai sedikit berputar cepat sesaat
       function pulseBgParticles() {
-        deviceShapes.forEach(mesh => {
-          mesh.userData.rotSpeedX *= 2.2;
-          mesh.userData.rotSpeedY *= 2.2;
-        });
-        setTimeout(() => {
-          deviceShapes.forEach(mesh => {
-            mesh.userData.rotSpeedX /= 2.2;
-            mesh.userData.rotSpeedY /= 2.2;
-          });
-        }, 600);
+        if (meshParticles && meshParticles.material) {
+          meshParticles.material.size = 5.0;
+          let id = setInterval(() => {
+            meshParticles.material.size -= 0.2;
+            if(meshParticles.material.size <= 2.5) {
+              meshParticles.material.size = 2.5;
+              clearInterval(id);
+            }
+          }, 30);
+        }
       }
 
       window.addEventListener("resize", () => {
@@ -2032,14 +1845,17 @@
         applyProfilePhoto();
         updateProgressUI();
 
-        // Membungkus fetch cloud dengan try-catch agar tidak memutus eksekusi kode selanjutnya jika offline
+        // Ambil preferensi tema pengguna sebelumnya
+        if (localStorage.getItem("mpi_theme") === "dark") {
+          document.documentElement.classList.add("dark");
+        }
+
         try {
           fetchRemoteData();
         } catch (err) {
           console.error("Cloud sinkronisasi dilewati (Mode lokal aktif):", err);
         }
 
-        // Memastikan tirai loading layar PASTI hilang dalam 1.2 detik demi menghindari kondisi stuck
         setTimeout(() => {
           const overlay = document.getElementById("loading-overlay");
           if (overlay) {
