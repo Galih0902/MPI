@@ -1,0 +1,2061 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>MPI Playground SD — v3.1 Connected</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>tailwind.config = { darkMode: "class" };</script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/canvas-confetti/1.9.2/confetti.browser.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,500&family=Fira+Code:wght@400;600&display=swap" rel="stylesheet" />
+
+    <style>
+      :root {
+        --bg: #fff9f0;
+        --bg-soft: #fffdf8;
+        --panel: rgba(255, 255, 255, 0.85);
+        --panel-solid: #ffffff;
+        --border: rgba(31, 41, 55, 0.09);
+        --text: #1f2937;
+        --text-muted: #6b7280;
+        --blue: #2f6fed;
+        --yellow: #f2a93b;
+        --green: #2bb673;
+        --purple: #8b5cf6;
+        --coral: #ff6b5b;
+        --grid-line: rgba(47, 111, 237, 0.07);
+        --shadow-soft: 0 10px 30px rgba(31, 41, 55, 0.06);
+      }
+      .dark {
+        --bg: #10141c;
+        --bg-soft: #151b26;
+        --panel: rgba(26, 32, 44, 0.8);
+        --panel-solid: #1a202c;
+        --border: rgba(255, 255, 255, 0.08);
+        --text: #f3f1ea;
+        --text-muted: #99a3b5;
+        --blue: #5b9dff;
+        --yellow: #ffc857;
+        --green: #4ade94;
+        --purple: #a78bfa;
+        --coral: #ff8a75;
+        --grid-line: rgba(91, 157, 255, 0.1);
+        --shadow-soft: 0 10px 30px rgba(0, 0, 0, 0.45);
+      }
+
+      * { box-sizing: border-box; }
+
+      body {
+        font-family: "Plus Jakarta Sans", sans-serif;
+        background-color: var(--bg);
+        color: var(--text);
+        transition: background-color 0.35s ease, color 0.35s ease;
+        overflow: hidden;
+        height: 100vh;
+        width: 100vw;
+        user-select: none;
+        -webkit-user-select: none;
+      }
+      .font-display { font-family: "Baloo 2", sans-serif; }
+      .code-font { font-family: "Fira Code", monospace; }
+
+      .text-gradient {
+        background: linear-gradient(95deg, var(--blue) 0%, var(--purple) 55%, var(--green) 100%);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+      }
+
+      .glass-panel {
+        background: var(--panel);
+        backdrop-filter: blur(18px);
+        border: 1px solid var(--border);
+        box-shadow: var(--shadow-soft);
+      }
+      .panel-solid {
+        background: var(--panel-solid);
+        border: 1px solid var(--border);
+      }
+
+      .perspective-grid { perspective: 800px; }
+      .grid-plane {
+        background-image: linear-gradient(var(--grid-line) 1px, transparent 1px), linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+        background-size: 50px 50px;
+        transform: rotateX(60deg);
+        transform-origin: top;
+        animation: grid-scroll 22s infinite linear;
+      }
+      @keyframes grid-scroll {
+        0% { background-position: 0 0; }
+        100% { background-position: 0 1000px; }
+      }
+
+      .smooth-transition { transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.5s ease; }
+      .app-screen {
+        position: absolute;
+        top: 0; left: 0;
+        width: 100%; height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        box-sizing: border-box;
+      }
+
+      .icon-3d-wrapper {
+        position: relative;
+        perspective: 400px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .icon-3d-base {
+        width: 64px; height: 64px;
+        border-radius: 20px;
+        background: linear-gradient(135deg, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0.05) 100%);
+        box-shadow: inset 2px 2px 4px rgba(255,255,255,0.4), inset -2px -2px 4px rgba(0,0,0,0.1), 5px 10px 20px rgba(0,0,0,0.1);
+        display: flex; align-items: center; justify-content: center;
+        transform: rotateX(15deg) rotateY(-10deg);
+        transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s ease;
+        animation: icon-idle-float 4s ease-in-out infinite;
+      }
+      @keyframes icon-idle-float {
+        0%, 100% { transform: rotateX(15deg) rotateY(-10deg) translateY(0px); }
+        50% { transform: rotateX(15deg) rotateY(-10deg) translateY(-6px); }
+      }
+      .dark .icon-3d-base {
+        background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(0,0,0,0.3) 100%);
+        box-shadow: inset 1px 1px 2px rgba(255,255,255,0.2), 5px 10px 25px rgba(0,0,0,0.5);
+      }
+      .icon-3d-base i {
+        font-size: 32px;
+        transform: translateZ(15px);
+        filter: drop-shadow(4px 6px 4px rgba(0,0,0,0.2));
+        transition: transform 0.4s ease;
+      }
+      .card-game-select:hover .icon-3d-base {
+        transform: rotateX(5deg) rotateY(-5deg) translateY(-4px);
+        box-shadow: 8px 16px 30px rgba(0,0,0,0.15);
+        animation-play-state: paused;
+      }
+      .card-game-select:hover .icon-3d-base i { transform: translateZ(25px) scale(1.1); }
+      .card-game-select {
+        transform-style: preserve-3d;
+        perspective: 1000px;
+        transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+      }
+      .card-game-select:hover { transform: translateY(-6px) scale(1.02); }
+
+      .opt-btn {
+        transition: all 0.2s ease;
+        border: 1px solid var(--border);
+        background: var(--bg-soft);
+        color: var(--text);
+        touch-action: manipulation;
+      }
+      .opt-btn:hover { transform: translateY(-2px); }
+      .opt-btn.correct { border-color: var(--green); background: rgba(43,182,115,0.12); color: var(--green); }
+      .opt-btn.wrong { border-color: var(--coral); background: rgba(255,107,91,0.12); color: var(--coral); }
+
+      .subtab-btn.active-tab {
+        background-color: var(--panel-solid);
+        border-bottom: 3px solid var(--blue);
+        color: var(--blue);
+        font-weight: 800;
+      }
+
+      .battle-arena-split { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; height: 100%; width: 100%; }
+      .player-side {
+        border-radius: 16px; padding: 16px; display: flex; flex-direction: column;
+        justify-content: space-between; align-items: center; background: rgba(255,255,255,0.03); border: 2px dashed var(--border);
+      }
+
+      .swal2-popup {
+        border-radius: 24px !important; font-family: "Plus Jakarta Sans", sans-serif !important;
+        background: var(--panel-solid) !important; color: var(--text) !important; border: 1px solid var(--border) !important;
+      }
+
+      .toolbar-btn {
+        width: 40px; height: 40px;
+        border-radius: 12px;
+        display: flex; align-items: center; justify-content: center;
+        transition: all 0.2s ease;
+        cursor: pointer;
+        border: 1px solid var(--border);
+        overflow: hidden;
+      }
+      .toolbar-btn:hover { transform: scale(1.08); }
+
+      .music-bar {
+        width: 3px; border-radius: 4px;
+        background: var(--blue);
+        animation: music-wave 1s ease-in-out infinite alternate;
+        transform-origin: bottom;
+      }
+      .music-bar:nth-child(1) { animation-delay: 0s; height: 8px; }
+      .music-bar:nth-child(2) { animation-delay: 0.15s; height: 14px; }
+      .music-bar:nth-child(3) { animation-delay: 0.3s; height: 10px; }
+      .music-bar:nth-child(4) { animation-delay: 0.1s; height: 16px; }
+      @keyframes music-wave {
+        0% { transform: scaleY(0.3); }
+        100% { transform: scaleY(1); }
+      }
+      .music-bars-container.paused .music-bar { animation-play-state: paused; }
+
+      .fs-pulse { animation: fs-ping 2s ease-in-out infinite; }
+      @keyframes fs-ping {
+        0%, 100% { opacity: 0.6; }
+        50% { opacity: 1; }
+      }
+
+      .video-embed-container {
+        position: relative; width: 100%; padding-top: 56.25%;
+        border-radius: 12px; overflow: hidden;
+        background: #000;
+        box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+      }
+      .video-embed-container iframe {
+        position: absolute; top: 0; left: 0;
+        width: 100%; height: 100%;
+        border: none;
+      }
+
+      .quiz-embed-container {
+        width: 100%; height: 100%;
+        border-radius: 12px; overflow: hidden;
+        background: var(--bg-soft);
+        box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+      }
+      .quiz-embed-container iframe {
+        width: 100%; height: 100%; border: none;
+      }
+
+      .lb-row { transition: all 0.3s ease; }
+      .lb-row:hover { transform: translateX(4px); }
+      .lb-rank-1 { background: linear-gradient(90deg, rgba(255,215,0,0.15), transparent); border-left: 3px solid gold; }
+      .lb-rank-2 { background: linear-gradient(90deg, rgba(192,192,192,0.15), transparent); border-left: 3px solid silver; }
+      .lb-rank-3 { background: linear-gradient(90deg, rgba(205,127,50,0.15), transparent); border-left: 3px solid #CD7F32; }
+
+      .timer-bar {
+        height: 4px; border-radius: 4px;
+        background: linear-gradient(90deg, var(--green), var(--blue));
+        transition: width 1s linear;
+      }
+      .timer-bar.urgent { background: linear-gradient(90deg, var(--coral), var(--yellow)); }
+
+      #notification-toast {
+        position: fixed; bottom: 80px; left: 50%;
+        transform: translateX(-50%) translateY(100px);
+        transition: transform 0.4s cubic-bezier(0.16,1,0.3,1), opacity 0.4s ease;
+        opacity: 0; z-index: 200;
+        min-width: 240px; text-align: center;
+      }
+      #notification-toast.show {
+        transform: translateX(-50%) translateY(0);
+        opacity: 1;
+      }
+
+      #loading-overlay {
+        position: fixed; inset: 0; z-index: 500;
+        background: var(--bg);
+        display: flex; flex-direction: column;
+        align-items: center; justify-content: center;
+        gap: 16px;
+        transition: opacity 0.5s ease;
+      }
+      .loader-ring {
+        width: 56px; height: 56px;
+        border: 4px solid var(--border);
+        border-top-color: var(--blue);
+        border-radius: 50%;
+        animation: spin 0.8s linear infinite;
+      }
+      @keyframes spin { to { transform: rotate(360deg); } }
+
+      .modal-overlay {
+        position: fixed; inset: 0; z-index: 100;
+        background: rgba(0,0,0,0.6);
+        backdrop-filter: blur(8px);
+        display: none; align-items: center; justify-content: center; padding: 16px;
+      }
+      .modal-overlay.open { display: flex; }
+
+      .materi-tab-btn {
+        padding: 6px 14px; border-radius: 8px;
+        font-size: 11px; font-weight: 700;
+        transition: all 0.2s;
+        border: 1px solid var(--border);
+        color: var(--text-muted);
+        background: transparent;
+        cursor: pointer;
+      }
+      .materi-tab-btn.active {
+        background: var(--blue);
+        color: white;
+        border-color: var(--blue);
+      }
+
+      /* ===================== AUDIO MATERI (TTS CARDS) ===================== */
+      .audio-card {
+        transition: all 0.25s ease;
+      }
+      .audio-card.audio-card-active {
+        border-color: var(--blue) !important;
+        background: rgba(47, 111, 237, 0.08);
+        transform: scale(1.02);
+        box-shadow: 0 6px 18px rgba(47, 111, 237, 0.15);
+      }
+      .audio-card.audio-card-active .audio-card-icon {
+        animation: audio-pulse 1s ease-in-out infinite;
+      }
+      @keyframes audio-pulse {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.12); }
+      }
+
+      /* ===================== PROFILE PHOTO ===================== */
+      .profile-photo-toolbar, .profile-photo-modal {
+        width: 100%; height: 100%;
+        object-fit: cover;
+        display: block;
+      }
+      .profile-photo-modal { border-radius: 9999px; }
+
+      /* ===================== PROGRESS TRACKER ===================== */
+      .progress-step {
+        display: flex; align-items: center; gap: 10px;
+        padding: 10px 14px; border-radius: 14px;
+        border: 1px solid var(--border);
+        transition: all 0.3s ease;
+      }
+      .progress-step.done {
+        border-color: var(--green);
+        background: rgba(43,182,115,0.08);
+      }
+      .progress-step .step-dot {
+        width: 28px; height: 28px; border-radius: 9999px;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 12px; font-weight: 800;
+        background: var(--bg-soft); border: 1px solid var(--border);
+        color: var(--text-muted); flex-shrink: 0;
+        transition: all 0.3s ease;
+      }
+      .progress-step.done .step-dot {
+        background: var(--green); color: #fff; border-color: var(--green);
+      }
+      .progress-ring-bg { stroke: var(--border); }
+      .progress-ring-fg {
+        stroke: var(--green);
+        stroke-linecap: round;
+        transform: rotate(-90deg);
+        transform-origin: center;
+        transition: stroke-dashoffset 0.6s ease;
+      }
+
+      /* ===================== TABS (LEADERBOARD) ===================== */
+      .lb-tab-btn {
+        flex: 1; padding: 6px 10px; border-radius: 10px;
+        font-size: 11px; font-weight: 800;
+        border: 1px solid var(--border);
+        background: transparent; color: var(--text-muted);
+        cursor: pointer; transition: all 0.2s;
+      }
+      .lb-tab-btn.active {
+        background: var(--blue); color: #fff; border-color: var(--blue);
+      }
+
+      /* ===================== CERTIFICATE ===================== */
+      .certificate-card {
+        background: var(--bg-soft);
+        border: 6px double var(--blue);
+        border-radius: 18px;
+        padding: 28px 20px;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+      }
+      .certificate-card::before, .certificate-card::after {
+        content: ""; position: absolute;
+        width: 140px; height: 140px;
+        border-radius: 9999px;
+        opacity: 0.08;
+      }
+      .certificate-card::before { background: var(--blue); top: -50px; left: -50px; }
+      .certificate-card::after { background: var(--purple); bottom: -50px; right: -50px; }
+
+      @media print {
+        body * { visibility: hidden !important; }
+        #print-certificate-area, #print-certificate-area * { visibility: visible !important; }
+        #print-certificate-area {
+          position: fixed; inset: 0; display: flex !important;
+          align-items: center; justify-content: center; padding: 24px;
+        }
+      }
+
+      /* ===================== SCREEN TRANSITION (3D FLIP) ===================== */
+      .app-screen.flip-out {
+        transform: rotateY(8deg) scale(0.96) translateX(-40px);
+        opacity: 0;
+      }
+      .app-screen.flip-in {
+        animation: flip-in-anim 0.55s cubic-bezier(0.16,1,0.3,1);
+      }
+      @keyframes flip-in-anim {
+        0% { transform: rotateY(-8deg) scale(0.96) translateX(40px); opacity: 0; }
+        100% { transform: rotateY(0deg) scale(1) translateX(0); opacity: 1; }
+      }
+    </style>
+  </head>
+
+  <body class="selection:bg-cyan-200 selection:text-slate-900 dark:selection:bg-cyan-900 dark:selection:text-white relative p-3 sm:p-4">
+
+    <div id="loading-overlay">
+      <div class="text-center space-y-3">
+        <div class="w-20 h-20 bg-gradient-to-tr from-blue-500 to-purple-500 rounded-2xl mx-auto flex items-center justify-center shadow-xl">
+          <span class="text-white font-black font-display text-2xl">MPI</span>
+        </div>
+        <div class="loader-ring mx-auto"></div>
+        <p class="text-xs font-bold code-font text-[var(--text-muted)]">Memuat Sistem Edutainment...</p>
+      </div>
+    </div>
+
+    <div id="three-bg-container" class="fixed top-0 left-0 w-full h-full -z-10 pointer-events-none opacity-40 dark:opacity-60"></div>
+    <div class="fixed top-0 left-0 w-full h-full -z-20 overflow-hidden opacity-50 pointer-events-none perspective-grid">
+      <div class="grid-plane absolute top-[40%] left-[-50%] w-[200%] h-[200%]"></div>
+    </div>
+
+    <audio id="bg-music" loop preload="none">
+      <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-7.mp3" type="audio/mpeg">
+    </audio>
+
+    <div class="fixed top-4 right-4 z-50 flex items-center gap-2">
+      <div id="conn-indicator" title="Status Koneksi Spreadsheet" class="toolbar-btn panel-solid shadow-sm gap-1 px-2 w-auto text-[10px] font-bold code-font text-[var(--text-muted)]">
+        <span class="w-2 h-2 rounded-full bg-gray-400 animate-pulse" id="conn-dot"></span>
+        <span id="conn-label">–</span>
+      </div>
+
+      <button onclick="toggleMusic()" id="btn-music" title="Musik Latar" class="toolbar-btn panel-solid shadow-sm">
+        <div class="music-bars-container paused flex items-end gap-0.5 h-5" id="music-vis">
+          <div class="music-bar"></div>
+          <div class="music-bar"></div>
+          <div class="music-bar"></div>
+          <div class="music-bar"></div>
+        </div>
+      </button>
+
+      <button onclick="toggleFullscreen()" id="btn-fs" title="Layar Penuh" class="toolbar-btn panel-solid shadow-sm">
+        <i class="fa-solid fa-expand text-sm fs-pulse" style="color:var(--text-muted)" id="fs-icon"></i>
+      </button>
+
+      <button onclick="openCreatorProfile()" title="Profil Pembuat" class="toolbar-btn bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-950 dark:to-slate-900 border-purple-300 shadow-sm">
+        <img src="" id="profile-photo-toolbar" class="profile-photo-toolbar hidden" alt="Foto Pembuat" />
+        <i class="fa-solid fa-user-tie text-purple-600 text-sm" id="profile-icon-toolbar"></i>
+      </button>
+
+      <button onclick="toggleTheme()" class="toolbar-btn panel-solid shadow-sm">
+        <i class="fa-solid fa-moon dark:hidden text-sm" style="color:var(--text-muted)"></i>
+        <i class="fa-solid fa-sun hidden dark:inline text-sm" style="color:var(--yellow)"></i>
+      </button>
+    </div>
+
+    <div id="notification-toast">
+      <div class="glass-panel px-4 py-2 rounded-full text-xs font-bold" id="toast-msg">–</div>
+    </div>
+
+    <div id="profile-modal" class="modal-overlay">
+      <div class="glass-panel max-w-sm w-full p-6 rounded-2xl text-center space-y-4 shadow-2xl border-t-4 border-purple-500">
+        <div class="w-20 h-20 bg-gradient-to-tr from-purple-500 to-blue-500 rounded-full mx-auto flex items-center justify-center text-white shadow-md overflow-hidden">
+          <img src="" id="profile-photo-modal" class="profile-photo-modal hidden" alt="Foto Pembuat" />
+          <i class="fa-solid fa-user-graduate text-3xl" id="profile-icon-modal"></i>
+        </div>
+        <div>
+          <h3 class="text-xl font-extrabold font-display">Galih Ramandha Rizki, S.Kom</h3>
+          <p class="text-xs font-mono tracking-wider text-purple-500 font-bold mt-1">Creator & Tech Developer</p>
+        </div>
+        <p class="text-xs text-[var(--text-muted)] leading-relaxed">MPI Playground SD v4.1 — Media Pembelajaran Interaktif dengan koneksi Google Spreadsheet real-time. Didesain untuk sensorik taktil dan pemahaman digital dasar anak sekolah dasar.</p>
+        <div class="flex gap-2">
+          <button onclick="closeModal('profile-modal')" class="flex-1 bg-gradient-to-r from-purple-600 to-blue-500 text-white py-2 rounded-xl text-xs font-bold shadow-md">Tutup</button>
+          <button onclick="refreshData()" class="flex-1 border border-blue-400 text-blue-500 py-2 rounded-xl text-xs font-bold">🔄 Refresh Data</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="leaderboard-modal" class="modal-overlay">
+      <div class="glass-panel max-w-sm w-full p-6 rounded-2xl shadow-2xl border-t-4 border-yellow-400">
+        <div class="flex items-center justify-between mb-3">
+          <h3 class="text-lg font-extrabold font-display text-gradient">🏆 Papan Skor</h3>
+          <button onclick="closeModal('leaderboard-modal')" class="w-8 h-8 rounded-lg panel-solid flex items-center justify-center text-xs"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div class="flex gap-2 mb-3">
+          <button onclick="switchLeaderboardTab('local')" id="lb-tab-local" class="lb-tab-btn active">📱 Lokal</button>
+          <button onclick="switchLeaderboardTab('cloud')" id="lb-tab-cloud" class="lb-tab-btn">☁️ Cloud</button>
+        </div>
+        <div id="leaderboard-list" class="space-y-2 max-h-72 overflow-y-auto"></div>
+        <button onclick="clearLeaderboard()" class="w-full mt-4 border border-red-300 text-red-400 py-2 rounded-xl text-xs font-bold">Reset Skor Lokal</button>
+      </div>
+    </div>
+
+    <div id="certificate-modal" class="modal-overlay">
+      <div class="glass-panel max-w-lg w-full p-4 rounded-2xl shadow-2xl space-y-3">
+        <div class="flex items-center justify-between">
+          <h3 class="text-sm font-extrabold font-display text-gradient">🎓 Sertifikat Pencapaian</h3>
+          <button onclick="closeModal('certificate-modal')" class="w-8 h-8 rounded-lg panel-solid flex items-center justify-center text-xs"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+
+        <div id="print-certificate-area">
+          <div class="certificate-card">
+            <i class="ri-medal-fill text-4xl text-amber-400"></i>
+            <h4 class="font-display font-black text-lg mt-2 text-gradient">SERTIFIKAT PENCAPAIAN</h4>
+            <p class="text-[10px] text-[var(--text-muted)] mt-1">MPI Playground SD — Perangkat Digital</p>
+            <p class="text-[11px] mt-4">Diberikan kepada</p>
+            <h2 id="cert-student-name" class="font-display font-black text-2xl my-1">Siswa</h2>
+            <p class="text-[11px]">atas keberhasilannya menyelesaikan Kuis Internal dengan nilai</p>
+            <div class="flex items-center justify-center gap-3 my-3">
+              <span id="cert-score" class="text-3xl font-black font-display text-blue-500">0/0</span>
+              <span id="cert-grade" class="text-3xl font-black font-display text-emerald-500">A</span>
+            </div>
+            <p class="text-[10px] text-[var(--text-muted)]">Tanggal: <span id="cert-date">-</span></p>
+            <p class="text-[10px] mt-4 font-bold font-display">Galih Ramandha Rizki, S.Kom</p>
+            <p class="text-[9px] text-[var(--text-muted)]">Pengembang MPI Playground SD</p>
+          </div>
+        </div>
+
+        <button onclick="printCertificate()" class="w-full bg-gradient-to-r from-blue-500 to-purple-500 text-white py-2.5 rounded-xl text-xs font-bold shadow-md">
+          <i class="fa-solid fa-print mr-1"></i> Cetak / Simpan PDF
+        </button>
+      </div>
+    </div>
+
+    <div id="quiz-embed-modal" class="modal-overlay">
+      <div class="glass-panel w-full max-w-4xl rounded-2xl shadow-2xl overflow-hidden flex flex-col" style="height:90vh">
+        <div class="flex items-center justify-between p-4 border-b border-[var(--border)]">
+          <h3 class="font-bold font-display text-sm text-gradient" id="quiz-embed-title">Kuis Interaktif</h3>
+          <div class="flex items-center gap-2">
+            <a id="quiz-embed-open" href="#" target="_blank" class="px-3 py-1.5 rounded-lg bg-blue-500 text-white text-xs font-bold"><i class="fa-solid fa-external-link-alt mr-1"></i>Buka Tab</a>
+            <button onclick="closeModal('quiz-embed-modal')" class="w-8 h-8 rounded-lg panel-solid flex items-center justify-center text-xs"><i class="fa-solid fa-xmark"></i></button>
+          </div>
+        </div>
+        <div class="flex-1 min-h-0">
+          <div class="quiz-embed-container h-full">
+            <iframe id="quiz-embed-iframe" src="" allowfullscreen allow="camera; microphone; fullscreen"></iframe>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <section id="screen-hero" class="app-screen smooth-transition p-3 sm:p-4">
+      <div class="w-full flex justify-start items-center">
+        <div class="flex items-center space-x-3 glass-panel px-4 py-2 rounded-2xl">
+          <div class="bg-gradient-to-tr from-[var(--blue)] to-[var(--purple)] p-2 rounded-xl text-white font-black font-display text-xs">MPI</div>
+          <span class="text-xs font-bold uppercase tracking-wider code-font">Gawai Edutainment v3.1</span>
+        </div>
+      </div>
+
+      <div class="my-auto text-center space-y-6 max-w-2xl mx-auto px-4">
+        <div class="inline-flex items-center space-x-2 px-3 py-1.5 rounded-full text-xs font-semibold code-font panel-solid text-[var(--blue)] shadow-sm">
+          <span class="flex h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></span>
+          <span>Sistem Interaktif Siap Dimainkan</span>
+        </div>
+        <h1 class="text-4xl md:text-6xl font-extrabold font-display tracking-tight">MPI Playground<br /><span class="text-gradient">Perangkat Digital</span></h1>
+        <p class="text-sm md:text-base text-[var(--text-muted)]">Mari menjelajah ragam bentuk komputer dengan sensasi taktil interaktif. Urutkan dimensi gadget, pilah pintu transmisi data, dan tantang temanmu di arena layar sentuh IFP!</p>
+        <div class="max-w-xs mx-auto pt-2 space-y-2">
+          <button onclick="changeScreen('screen-menu')" class="w-full bg-gradient-to-r from-[var(--blue)] to-[var(--purple)] text-white font-extrabold font-display text-xl py-4 rounded-2xl shadow-xl transform hover:scale-105 transition-all">
+            Mulai Petualangan 🎮
+          </button>
+          <p class="text-[10px] text-[var(--text-muted)] code-font">Tap 🎵 di kanan atas untuk musik latar · 📺 untuk layar penuh</p>
+        </div>
+      </div>
+
+      <footer class="w-full text-center text-[10px] text-[var(--text-muted)]">
+        <p>&copy; 2026 MPI Playground • Developed by Galih Ramandha Rizki, S.Kom</p>
+      </footer>
+    </section>
+
+    <section id="screen-menu" class="app-screen smooth-transition p-3 sm:p-4 opacity-0 pointer-events-none translate-x-full">
+      <div class="w-full flex items-center justify-between">
+        <button onclick="changeScreen('screen-hero')" class="smooth-transition px-4 py-2 rounded-xl panel-solid text-xs font-bold flex items-center gap-2"><i class="fa-solid fa-chevron-left"></i> Kembali</button>
+        <h2 class="text-2xl font-extrabold font-display text-gradient pr-12">Papan Utama Eksplorasi 🌟</h2>
+      </div>
+
+      <div class="my-auto grid grid-cols-2 md:grid-cols-4 gap-4 max-w-5xl w-full mx-auto px-4">
+        <div onclick="changeScreen('screen-kompetensi')" class="card-game-select glass-panel p-5 rounded-2xl border-2 hover:border-[var(--blue)] cursor-pointer text-center flex flex-col justify-between h-64">
+          <div class="icon-3d-wrapper mx-auto"><div class="icon-3d-base text-blue-500 bg-blue-50/50"><i class="ri-award-line"></i></div></div>
+          <div><h3 class="text-base font-bold font-display">A. Kompetensi</h3><p class="text-[10px] text-[var(--text-muted)] mt-1">Capaian & target belajar siswa sekolah dasar.</p></div>
+          <div class="text-xs font-mono font-bold text-[var(--blue)]">Buka Target →</div>
+        </div>
+
+        <div onclick="openMateriSubmenu()" class="card-game-select glass-panel p-5 rounded-2xl border-2 hover:border-[var(--purple)] cursor-pointer text-center flex flex-col justify-between h-64">
+          <div class="icon-3d-wrapper mx-auto"><div class="icon-3d-base text-purple-500 bg-purple-50/50"><i class="ri-book-open-line"></i></div></div>
+          <div><h3 class="text-base font-bold font-display">B. Materi</h3><p class="text-[10px] text-[var(--text-muted)] mt-1">Eksplorasi Audio, Visual, Video & Kinestetik.</p></div>
+          <div class="text-xs font-mono font-bold text-[var(--purple)]">Pilih Topik →</div>
+        </div>
+
+        <div onclick="openGameSelection()" class="card-game-select glass-panel p-5 rounded-2xl border-2 hover:border-[var(--green)] cursor-pointer text-center flex flex-col justify-between h-64">
+          <div class="icon-3d-wrapper mx-auto"><div class="icon-3d-base text-emerald-500 bg-emerald-50/50"><i class="ri-gamepad-line"></i></div></div>
+          <div><h3 class="text-base font-bold font-display">C. Game</h3><p class="text-[10px] text-[var(--text-muted)] mt-1">Uji aksi taktil mandiri atau duel layar IFP.</p></div>
+          <div class="text-xs font-mono font-bold text-[var(--green)]">Mainkan →</div>
+        </div>
+
+        <div onclick="changeScreen('screen-kuis-hub')" class="card-game-select glass-panel p-5 rounded-2xl border-2 hover:border-[var(--yellow)] cursor-pointer text-center flex flex-col justify-between h-64">
+          <div class="icon-3d-wrapper mx-auto"><div class="icon-3d-base text-amber-500 bg-amber-50/50"><i class="ri-file-list-3-line"></i></div></div>
+          <div><h3 class="text-base font-bold font-display">D. Kuis</h3><p class="text-[10px] text-[var(--text-muted)] mt-1">Evaluasi & kuis interaktif embed platform.</p></div>
+          <div class="text-xs font-mono font-bold text-[var(--yellow)]">Uji Nyali →</div>
+        </div>
+      </div>
+
+      <div class="w-full flex items-center justify-between max-w-5xl mx-auto px-4">
+        <div class="text-xs font-bold text-purple-600 font-display">Sistem Buatan: Galih Ramandha Rizki, S.Kom</div>
+        <button onclick="openModal('leaderboard-modal'); switchLeaderboardTab('local')" class="flex items-center gap-1.5 text-xs font-bold text-amber-500 hover:text-amber-400 transition-colors">
+          <i class="fa-solid fa-trophy"></i> Papan Skor
+        </button>
+      </div>
+    </section>
+
+    <section id="screen-kompetensi" class="app-screen smooth-transition p-3 sm:p-4 opacity-0 pointer-events-none translate-x-full">
+      <div class="w-full flex items-center justify-between">
+        <button onclick="changeScreen('screen-menu')" class="smooth-transition px-4 py-2 rounded-xl panel-solid text-xs font-bold flex items-center gap-2"><i class="fa-solid fa-chevron-left"></i> Menu Utama</button>
+        <h2 class="text-xl font-extrabold font-display text-gradient pr-24">Kompetensi Belajar CP & ATP 🎯</h2>
+      </div>
+      <div class="my-auto max-w-2xl w-full mx-auto space-y-4 overflow-y-auto">
+        <div class="glass-panel p-5 rounded-2xl border-l-4 border-blue-500">
+          <h4 class="font-bold text-blue-500 text-sm uppercase font-mono mb-2">🎯 Capaian Pembelajaran (CP)</h4>
+          <p class="text-xs sm:text-sm leading-relaxed" id="cp-text">Peserta didik mampu mengenali berbagai perangkat keras komputer di sekitarnya, mengidentifikasi perbedaan ukuran gawai, membedakan fungsi komponen input dan output data, serta mendemonstrasikan kebiasaan merawat gawai secara aman.</p>
+        </div>
+        <div class="glass-panel p-5 rounded-2xl border-l-4 border-purple-500">
+          <h4 class="font-bold text-purple-500 text-sm uppercase font-mono mb-2">📌 Tujuan Pembelajaran (TP)</h4>
+          <ul class="text-xs sm:text-sm space-y-1.5 list-disc pl-4">
+            <li>Mengurutkan 5 tingkatan dimensi gawai komputer secara presisi.</li>
+            <li>Memisahkan gerbang piranti Input pengetikan dan Output cetak visual.</li>
+            <li>Memilih aksi protektif higienis harian untuk menjaga keawetan piranti keras.</li>
+          </ul>
+        </div>
+        <div class="glass-panel p-5 rounded-2xl border-l-4 border-green-500">
+          <h4 class="font-bold text-green-500 text-sm uppercase font-mono mb-2">📊 Indikator Ketercapaian</h4>
+          <div class="grid grid-cols-3 gap-3 mt-2">
+            <div class="text-center p-3 rounded-xl bg-blue-50 dark:bg-blue-950/30">
+              <div class="text-2xl font-black font-display text-blue-500">80%</div>
+              <div class="text-[10px] text-[var(--text-muted)] mt-1">Nilai Min. Lulus</div>
+            </div>
+            <div class="text-center p-3 rounded-xl bg-purple-50 dark:bg-purple-950/30">
+              <div class="text-2xl font-black font-display text-purple-500">3</div>
+              <div class="text-[10px] text-[var(--text-muted)] mt-1">Topik Materi</div>
+            </div>
+            <div class="text-center p-3 rounded-xl bg-green-50 dark:bg-green-950/30">
+              <div class="text-2xl font-black font-display text-green-500">45'</div>
+              <div class="text-[10px] text-[var(--text-muted)] mt-1">Est. Durasi</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="glass-panel p-5 rounded-2xl border-l-4 border-amber-500">
+          <div class="flex items-center justify-between mb-3">
+            <h4 class="font-bold text-amber-500 text-sm uppercase font-mono">🚀 Progres Eksplorasi Materi</h4>
+            <div class="relative w-12 h-12">
+              <svg viewBox="0 0 44 44" class="w-12 h-12">
+                <circle class="progress-ring-bg" cx="22" cy="22" r="18" fill="none" stroke-width="4"></circle>
+                <circle id="progress-ring-fg" class="progress-ring-fg" cx="22" cy="22" r="18" fill="none" stroke-width="4" stroke-dasharray="113" stroke-dashoffset="113"></circle>
+              </svg>
+              <span id="progress-ring-text" class="absolute inset-0 flex items-center justify-center text-[10px] font-black font-display">0%</span>
+            </div>
+          </div>
+          <div class="space-y-2" id="progress-step-list">
+            <div class="progress-step" data-topik="topik1"><div class="step-dot"><i class="ri-check-line"></i></div><span class="text-xs font-bold">Topik 1: Ukuran Gawai</span></div>
+            <div class="progress-step" data-topik="topik2"><div class="step-dot"><i class="ri-check-line"></i></div><span class="text-xs font-bold">Topik 2: Input & Output</span></div>
+            <div class="progress-step" data-topik="topik3"><div class="step-dot"><i class="ri-check-line"></i></div><span class="text-xs font-bold">Topik 3: Rawat Gadget</span></div>
+          </div>
+        </div>
+      </div>
+      <div></div>
+    </section>
+
+    <section id="screen-materi-hub" class="app-screen smooth-transition p-3 sm:p-4 opacity-0 pointer-events-none translate-x-full">
+      <div class="w-full flex items-center justify-between">
+        <button onclick="changeScreen('screen-menu')" class="smooth-transition px-4 py-2 rounded-xl panel-solid text-xs font-bold flex items-center gap-2"><i class="fa-solid fa-chevron-left"></i> Menu Utama</button>
+        <h2 class="text-xl font-extrabold font-display text-gradient pr-24">Pilih Topik Materi Belajar 📖</h2>
+      </div>
+      <div class="my-auto grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl w-full mx-auto px-4">
+        <div onclick="selectMateriTopik('topik1')" class="card-game-select glass-panel p-5 rounded-2xl text-center cursor-pointer border-b-4 border-blue-500 relative">
+          <span class="materi-done-badge absolute top-2 right-2 text-emerald-500 hidden" data-topik-badge="topik1"><i class="ri-checkbox-circle-fill text-lg"></i></span>
+          <i class="ri-smartphone-line text-4xl text-blue-500 block mb-2"></i>
+          <h4 class="font-bold font-display text-base">Topik 1: Ukuran Gawai</h4>
+          <p class="text-[11px] text-[var(--text-muted)] mt-1">Eksplorasi rentang ukuran fisik komputer.</p>
+        </div>
+        <div onclick="selectMateriTopik('topik2')" class="card-game-select glass-panel p-5 rounded-2xl text-center cursor-pointer border-b-4 border-amber-500 relative">
+          <span class="materi-done-badge absolute top-2 right-2 text-emerald-500 hidden" data-topik-badge="topik2"><i class="ri-checkbox-circle-fill text-lg"></i></span>
+          <i class="ri-keyboard-line text-4xl text-amber-500 block mb-2"></i>
+          <h4 class="font-bold font-display text-base">Topik 2: Input & Output</h4>
+          <p class="text-[11px] text-[var(--text-muted)] mt-1">Memahami gerbang perintah dan hasil data.</p>
+        </div>
+        <div onclick="selectMateriTopik('topik3')" class="card-game-select glass-panel p-5 rounded-2xl text-center cursor-pointer border-b-4 border-emerald-500 relative">
+          <span class="materi-done-badge absolute top-2 right-2 text-emerald-500 hidden" data-topik-badge="topik3"><i class="ri-checkbox-circle-fill text-lg"></i></span>
+          <i class="ri-heart-pulse-line text-4xl text-emerald-500 block mb-2"></i>
+          <h4 class="font-bold font-display text-base">Topik 3: Rawat Gadget</h4>
+          <p class="text-[11px] text-[var(--text-muted)] mt-1">Tips penting merawat keawetan komputer.</p>
+        </div>
+      </div>
+      <div></div>
+    </section>
+
+    <section id="screen-materi-viewer" class="app-screen smooth-transition p-3 sm:p-4 opacity-0 pointer-events-none translate-x-full">
+      <div class="w-full flex items-center justify-between glass-panel rounded-2xl px-4 py-2">
+        <button onclick="changeScreen('screen-materi-hub')" class="smooth-transition px-3 py-1.5 rounded-xl panel-solid text-xs font-bold flex items-center gap-1.5"><i class="fa-solid fa-arrow-left"></i> Topik</button>
+        <span id="txt-current-topik-title" class="font-display font-bold text-sm text-gradient">-</span>
+        <button onclick="speakMateriText()" class="px-3 py-1.5 rounded-xl bg-purple-100 dark:bg-purple-900/30 text-purple-600 text-xs font-bold flex items-center gap-1">
+          <i class="fa-solid fa-volume-up"></i> TTS
+        </button>
+      </div>
+
+      <div class="flex-grow flex flex-col max-w-4xl w-full mx-auto panel-solid border rounded-2xl p-4 my-3 min-h-0">
+        <div class="flex items-center gap-2 flex-wrap mb-4 flex-shrink-0">
+          <button onclick="switchGayaBelajar('visual')" id="tab-visual" class="materi-tab-btn active subtab-btn">
+            <i class="ri-gallery-line mr-1"></i>Visual
+          </button>
+          <button onclick="switchGayaBelajar('audio')" id="tab-audio" class="materi-tab-btn subtab-btn">
+            <i class="ri-volume-up-line mr-1"></i>Audio
+          </button>
+          <button onclick="switchGayaBelajar('video')" id="tab-video" class="materi-tab-btn subtab-btn">
+            <i class="ri-video-line mr-1"></i>Video
+          </button>
+          <button onclick="switchGayaBelajar('kinestetik')" id="tab-kinestetik" class="materi-tab-btn subtab-btn">
+            <i class="ri-hand-coin-line mr-1"></i>Kinestetik
+          </button>
+        </div>
+
+        <div class="flex-1 min-h-0 overflow-y-auto">
+          <div id="view-visual" class="materi-gaya-content space-y-4">
+            <div id="visual-content-cards" class="grid grid-cols-1 sm:grid-cols-2 gap-3"></div>
+          </div>
+
+          <div id="view-audio" class="materi-gaya-content hidden space-y-4">
+            <div class="glass-panel p-4 rounded-2xl space-y-3">
+              <div class="flex items-center gap-3">
+                <div class="w-12 h-12 rounded-full bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center shadow-md flex-shrink-0">
+                  <i class="fa-solid fa-headphones text-lg text-white"></i>
+                </div>
+                <div class="flex-1">
+                  <p class="text-xs font-extrabold font-display">Dengarkan Materi (Visual + Suara)</p>
+                  <p class="text-[10px] text-[var(--text-muted)]">Setiap kartu akan dibacakan robot suara satu per satu.</p>
+                </div>
+              </div>
+              <div class="flex items-center gap-2">
+                <button onclick="toggleAudioMateriPlay()" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 rounded-xl text-xs shadow-md flex items-center justify-center gap-2">
+                  <i class="fa-solid fa-play" id="audio-play-icon"></i>
+                  <span id="audio-play-label">Putar Semua</span>
+                </button>
+                <button onclick="stopAudioMateriPlay()" class="w-11 h-11 rounded-xl bg-gray-200 dark:bg-gray-700 text-[var(--text)] flex items-center justify-center flex-shrink-0">
+                  <i class="fa-solid fa-stop"></i>
+                </button>
+              </div>
+              <div class="bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+                <div class="timer-bar" id="audio-progress-bar" style="width:0%"></div>
+              </div>
+              <p class="text-[10px] text-[var(--text-muted)] text-center" id="audio-progress-label">Tekan putar untuk mulai mendengarkan</p>
+            </div>
+
+            <div id="audio-content-cards" class="grid grid-cols-1 sm:grid-cols-2 gap-3"></div>
+          </div>
+
+          <div id="view-video" class="materi-gaya-content hidden space-y-3">
+            <div class="video-embed-container" id="video-embed-wrap">
+              <iframe id="materi-video-iframe" src="" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            </div>
+            <div class="flex items-center justify-between">
+              <p class="text-[11px] text-[var(--text-muted)] font-bold" id="video-label-text">Video Pembelajaran</p>
+              <a id="video-open-link" href="#" target="_blank" class="text-[11px] text-blue-500 font-bold flex items-center gap-1"><i class="fa-solid fa-external-link-alt"></i> Tonton di YouTube</a>
+            </div>
+          </div>
+
+          <div id="view-kinestetik" class="materi-gaya-content hidden space-y-3">
+            <div class="glass-panel p-5 rounded-2xl border-l-4 border-emerald-500 space-y-3 text-center sm:text-left">
+              <div class="w-12 h-12 rounded-xl bg-emerald-50 dark:bg-emerald-950/30 text-emerald-500 flex items-center justify-center text-xl mx-auto sm:mx-0"><i class="ri-hand-sparkler-line"></i></div>
+              <h4 class="font-extrabold font-display text-sm">Aktivitas Gerak Kinestetik Luar Layar:</h4>
+              <p class="text-xs sm:text-sm leading-relaxed text-[var(--text-muted)]" id="txt-kinestetik-desc">-</p>
+              <div class="pt-2"><span class="bg-emerald-500 text-white text-[10px] font-black px-2.5 py-1 rounded-full uppercase">Praktek Mandiri Bersama Guru</span></div>
+            </div>
+
+            <div id="kinestetik-video-wrap" class="space-y-2 hidden">
+              <p class="text-[11px] font-bold text-[var(--text-muted)]"><i class="ri-video-line mr-1"></i>Video Contoh Gerakan:</p>
+              <div class="video-embed-container">
+                <iframe id="kinestetik-video-iframe" src="" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div></div>
+    </section>
+
+    <section id="screen-gameplay" class="app-screen smooth-transition p-3 sm:p-4 opacity-0 pointer-events-none translate-x-full">
+      <div class="w-full flex items-center justify-between">
+        <button onclick="changeScreen('screen-menu')" class="smooth-transition px-4 py-2 rounded-xl panel-solid text-xs font-bold flex items-center gap-2"><i class="fa-solid fa-chevron-left"></i> Menu Utama</button>
+        <h2 class="text-xl font-extrabold font-display text-gradient pr-24">Arena Game Edukasi 🎮</h2>
+      </div>
+
+      <div class="my-auto grid grid-cols-1 lg:grid-cols-12 gap-4 max-w-6xl w-full mx-auto px-2 min-h-0 flex-grow pt-3 pb-2">
+        <div class="lg:col-span-3 space-y-3 flex flex-col justify-start">
+          <div class="glass-panel p-3 rounded-2xl space-y-2">
+            <p class="text-[10px] font-black uppercase text-[var(--text-muted)] tracking-wider">Pilih Aturan Main:</p>
+            <button onclick="switchGameMode('solo')" id="btn-mode-solo" class="w-full py-2 rounded-xl text-xs font-bold text-left px-3 border transition-all flex items-center justify-between"><span>🧑 Mode Solo (Mandiri)</span><i class="ri-user-line"></i></button>
+            <button onclick="switchGameMode('battle')" id="btn-mode-battle" class="w-full py-2 rounded-xl text-xs font-bold text-left px-3 border transition-all flex items-center justify-between"><span>👥 Duel 2 Player (IFP)</span><i class="ri-user-shared-line"></i></button>
+          </div>
+
+          <div class="glass-panel p-3 rounded-2xl text-center space-y-2">
+            <p class="text-[10px] font-black uppercase text-[var(--text-muted)] tracking-wider">Sesi Poin Kamu:</p>
+            <div class="text-4xl font-black text-purple-600 font-display" id="txt-session-score">0</div>
+          </div>
+
+          <div class="glass-panel p-3 rounded-2xl space-y-2">
+            <div class="text-3xl font-black font-display text-center" id="game-timer-display">00:00</div>
+            <div class="bg-gray-200 dark:bg-gray-700 rounded-full h-1.5">
+              <div class="timer-bar" id="game-timer-bar" style="width:100%"></div>
+            </div>
+            <div class="flex gap-1">
+              <button onclick="startGameTimer()" class="flex-1 py-1.5 rounded-lg bg-green-500 text-white font-bold text-[10px]">Mulai</button>
+              <button onclick="resetGameTimer()" class="flex-1 py-1.5 rounded-lg bg-gray-400 text-white font-bold text-[10px]">Reset</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="lg:col-span-9 panel-solid border-4 rounded-2xl flex flex-col justify-between p-4 min-h-0 overflow-y-auto border-emerald-500">
+          <div class="my-auto w-full flex flex-col items-center">
+            <div id="solo-game-container" class="w-full max-w-md space-y-4 text-center">
+              <span class="bg-blue-500 text-white text-[10px] font-black px-3 py-1 rounded-full">MODE MANDIRI (SOLO)</span>
+              <p class="text-xs font-bold">Pilah Kategori Alat di Bawah Ini:</p>
+              <div class="text-5xl font-black text-blue-500 font-display tracking-wide min-h-[56px] flex items-center justify-center" id="txt-solo-quest">-</div>
+              <div class="grid grid-cols-2 gap-3 pt-2">
+                <button onclick="submitSoloGameAnswer('INPUT')" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 rounded-xl text-sm shadow-md transition-transform hover:scale-105">⌨️ INPUT</button>
+                <button onclick="submitSoloGameAnswer('OUTPUT')" class="bg-orange-500 hover:bg-orange-600 text-white font-bold py-4 rounded-xl text-sm shadow-md transition-transform hover:scale-105">🖥️ OUTPUT</button>
+              </div>
+              <div class="flex items-center justify-center gap-4 pt-2 text-xs font-mono">
+                <span class="text-green-500 font-bold">✓ <span id="solo-correct">0</span> Benar</span>
+                <span class="text-red-400 font-bold">✗ <span id="solo-wrong">0</span> Salah</span>
+              </div>
+            </div>
+
+            <div id="battle-game-container" class="w-full hidden space-y-4">
+              <div class="text-center"><span class="bg-red-500 text-white text-[10px] font-black px-3 py-1 rounded-full">MODE DUEL LAYAR SENTUH 2 PLAYER</span></div>
+              <div class="battle-arena-split">
+                <div class="player-side border-blue-400">
+                  <div class="text-center"><h5 class="text-xs font-bold text-blue-500">🔵 Player 1 (Kiri)</h5><div class="text-lg font-black font-mono mt-1" id="battle-score-p1">Skor: 0</div></div>
+                  <div class="w-full bg-gray-200 dark:bg-gray-700 h-2 rounded-full overflow-hidden mt-1"><div id="p1-progress" class="bg-blue-500 h-full w-0 transition-all"></div></div>
+                  <div class="text-xl font-extrabold my-4 font-display h-12 flex items-center text-center" id="txt-p1-quest">-</div>
+                  <div class="grid grid-cols-2 gap-2 w-full">
+                    <button onclick="submitBattleAnswer(1, 'INPUT')" class="bg-blue-600 text-white text-xs font-bold py-3 rounded-xl shadow">INPUT</button>
+                    <button onclick="submitBattleAnswer(1, 'OUTPUT')" class="bg-orange-500 text-white text-xs font-bold py-3 rounded-xl shadow">OUTPUT</button>
+                  </div>
+                </div>
+
+                <div class="player-side border-red-400">
+                  <div class="text-center"><h5 class="text-xs font-bold text-red-500">🔴 Player 2 (Kanan)</h5><div class="text-lg font-black font-mono mt-1" id="battle-score-p2">Skor: 0</div></div>
+                  <div class="w-full bg-gray-200 dark:bg-gray-700 h-2 rounded-full overflow-hidden mt-1"><div id="p2-progress" class="bg-red-500 h-full w-0 transition-all"></div></div>
+                  <div class="text-xl font-extrabold my-4 font-display h-12 flex items-center text-center" id="txt-p2-quest">-</div>
+                  <div class="grid grid-cols-2 gap-2 w-full">
+                    <button onclick="submitBattleAnswer(2, 'INPUT')" class="bg-blue-600 text-white text-xs font-bold py-3 rounded-xl shadow">INPUT</button>
+                    <button onclick="submitBattleAnswer(2, 'OUTPUT')" class="bg-orange-500 text-white text-xs font-bold py-3 rounded-xl shadow">OUTPUT</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div></div>
+    </section>
+
+    <section id="screen-kuis-hub" class="app-screen smooth-transition p-3 sm:p-4 opacity-0 pointer-events-none translate-x-full">
+      <div class="w-full flex items-center justify-between">
+        <button onclick="changeScreen('screen-menu')" class="smooth-transition px-4 py-2 rounded-xl panel-solid text-xs font-bold flex items-center gap-2"><i class="fa-solid fa-chevron-left"></i> Menu Utama</button>
+        <h2 class="text-xl font-extrabold font-display text-gradient pr-24">Pilih Mode Kuis 📝</h2>
+      </div>
+
+      <div class="my-auto grid grid-cols-1 md:grid-cols-2 gap-6 max-w-3xl w-full mx-auto px-4">
+        <div onclick="startQuiz()" class="card-game-select glass-panel p-6 rounded-2xl text-center cursor-pointer border-b-4 border-amber-500 space-y-3">
+          <i class="ri-file-list-3-line text-5xl text-amber-500 block"></i>
+          <h4 class="font-bold font-display text-lg">Kuis Internal</h4>
+          <p class="text-[11px] text-[var(--text-muted)]">Soal pilihan ganda bawaan MPI dengan skor otomatis, sertifikat, dan umpan balik langsung.</p>
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-100 dark:bg-amber-900/30 text-amber-600 text-[10px] font-bold">
+            <span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span> 3 Soal · Skor Langsung
+          </div>
+        </div>
+
+        <div onclick="changeScreen('screen-kuis-embed-list')" class="card-game-select glass-panel p-6 rounded-2xl text-center cursor-pointer border-b-4 border-blue-500 space-y-3">
+          <i class="ri-external-link-line text-5xl text-blue-500 block"></i>
+          <h4 class="font-bold font-display text-lg">Kuis Eksternal</h4>
+          <p class="text-[11px] text-[var(--text-muted)]">Embed Wordwall, Kahoot, Quiziz, Google Form, atau platform kuis interaktif lainnya.</p>
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-600 text-[10px] font-bold">
+            <span class="w-1.5 h-1.5 rounded-full bg-blue-500"></span> Platform Online Embeded
+          </div>
+        </div>
+      </div>
+      <div></div>
+    </section>
+
+    <section id="screen-kuis-embed-list" class="app-screen smooth-transition p-3 sm:p-4 opacity-0 pointer-events-none translate-x-full">
+      <div class="w-full flex items-center justify-between">
+        <button onclick="changeScreen('screen-kuis-hub')" class="smooth-transition px-4 py-2 rounded-xl panel-solid text-xs font-bold flex items-center gap-2"><i class="fa-solid fa-chevron-left"></i> Hub Kuis</button>
+        <h2 class="text-xl font-extrabold font-display text-gradient pr-24">Daftar Kuis Interaktif Cloud 🌐</h2>
+      </div>
+      <div class="my-auto max-w-xl w-full mx-auto space-y-3 overflow-y-auto max-h-[65vh] px-2" id="kuis-embed-list-container"></div>
+      <div></div>
+    </section>
+
+    <section id="screen-kuis" class="app-screen smooth-transition p-3 sm:p-4 opacity-0 pointer-events-none translate-x-full">
+      <div class="w-full flex items-center justify-between glass-panel px-4 py-2 rounded-2xl">
+        <button onclick="changeScreen('screen-kuis-hub')" class="smooth-transition px-3 py-1.5 rounded-xl panel-solid text-xs font-bold flex items-center gap-1.5"><i class="fa-solid fa-xmark"></i> Keluar</button>
+        <span id="txt-quiz-hud" class="font-mono font-bold text-xs text-[var(--text-muted)]">Soal -- / --</span>
+        <div class="flex items-center gap-2">
+          <i class="fa-regular fa-clock text-xs text-orange-400"></i>
+          <span id="txt-quiz-timer" class="font-mono font-black text-xs text-orange-500">30s</span>
+        </div>
+      </div>
+
+      <div class="my-auto max-w-lg w-full mx-auto panel-solid p-6 rounded-2xl border-2 border-amber-400 space-y-4 shadow-xl">
+        <div class="flex items-center gap-2">
+          <div class="flex gap-1" id="quiz-progress-dots"></div>
+        </div>
+        <h3 id="txt-quiz-question" class="text-sm sm:text-base font-bold text-center leading-relaxed">Loading Pertanyaan...</h3>
+        <div id="quiz-options-box" class="flex flex-col gap-2 pt-2"></div>
+      </div>
+      <div></div>
+    </section>
+
+    <script>
+      // ============================================================
+      // CONFIG — Ganti SPREADSHEET_ID dan GAS_URL sesuai deployment
+      // ============================================================
+      const GAS_URL = ""; // << ISI URL Google Apps Script Web App di sini
+      const SPREADSHEET_ID = "1Q8VDu7KJyQI5ds7JM8IYGeR5VBydS0J-gNFbLQKt2js";
+
+      // ============================================================
+      // FOTO PROFIL PEMBUAT — Google Drive
+      // ============================================================
+      // Cara isi:
+      // 1. Upload foto ke Google Drive -> klik kanan -> Share -> "Anyone with the link"
+      // 2. Ambil FILE_ID dari URL share: https://drive.google.com/file/d/FILE_ID/view
+      // 3. Tempel ke bawah ini dengan format:
+      //    const PROFILE_PHOTO_URL = "https://lh3.googleusercontent.com/d/FILE_ID";
+      // Kosongkan ("") jika ingin tetap pakai ikon default.
+      const PROFILE_PHOTO_URL = "";
+
+      // ============================================================
+      // STATE
+      // ============================================================
+      let gameMode = "solo";
+      let currentQuizIdx = 0;
+      let quizScore = 0;
+      let quizTimerInterval = null;
+      let quizTimeLeft = 30;
+      let gameTimerInterval = null;
+      let gameTimerSeconds = 0;
+      let soloCorrect = 0, soloWrong = 0;
+      let sessionScore = 0;
+      let isMusicPlaying = false;
+      let scoreP1 = 0, scoreP2 = 0;
+      let currentSoloQuest;
+      let battleQ1, battleQ2;
+      let currentTopikData = null;
+      let remoteData = null;
+      let lastQuizResult = null;
+      let activeScreenId = "screen-hero";
+      let audioCtx = null;
+
+      // ============================================================
+      // DATABASE LOKAL (FALLBACK jika Spreadsheet tidak tersambung)
+      // ============================================================
+      const localDatabase = {
+        topik1: {
+          title: "Topik 1: Ukuran Dimensi Gawai",
+          audio_url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
+          video_url: "https://www.youtube.com/embed/T1b1h2Bxfic",
+          video_label: "Video Pengenalan Ukuran Komputer & Gawai",
+          kinestetik: "Berdirilah bersama teman sebangkumu! Regangkan kedua tanganmu lebar-lebar seolah memeluk komputer Mainframe yang sangat besar, tahan selama 3 hitungan. Setelah itu, kuncupkan jari-jarimu sekecil mungkin seperti sedang memegang jam tangan pintar (smartwatch). Ulangi gerakan ini 3 kali sambil menyebutkan nama gawainya: 'Besar seperti Mainframe... kecil seperti Smartwatch!'",
+          kinestetik_video: "",
+          visual: [
+            { title: "1. Mainframe (Super)", desc: "Mainframe adalah komputer paling besar yang ukurannya bisa seukuran lemari pakaian atau bahkan satu ruangan penuh. Komputer raksasa ini biasanya digunakan oleh bank besar, kantor pusat bursa saham, atau lembaga pemerintah untuk mengolah jutaan data sekaligus dalam waktu yang sangat cepat. Karena ukurannya sangat besar dan harganya mahal, mainframe biasanya tidak kita temui di rumah, melainkan di ruangan khusus yang dijaga ketat dan selalu dingin.", icon: "ri-server-line", c: "text-blue-500" },
+            { title: "2. Desktop PC", desc: "Desktop PC adalah komputer meja yang sering kita lihat di ruang komputer sekolah, kantor, atau warnet. Komputer ini terdiri dari beberapa bagian terpisah, yaitu kotak CPU sebagai 'otak' komputer, monitor sebagai layar untuk melihat hasil, serta keyboard dan mouse untuk memberi perintah. Karena bagian-bagiannya terpisah dan cukup berat, desktop PC biasanya menetap di satu meja saja dan tidak dibawa berpindah-pindah.", icon: "ri-computer-line", c: "text-purple-500" },
+            { title: "3. Laptop", desc: "Laptop adalah komputer lipat yang seluruh bagiannya, yaitu layar, keyboard, dan baterai, sudah menyatu dalam satu badan yang ringkas. Karena memakai baterai, laptop bisa dibawa dan digunakan di mana saja, misalnya di kelas, di perpustakaan, atau bahkan di dalam mobil saat bepergian. Bentuknya yang bisa dilipat membuat laptop mudah dimasukkan ke dalam tas sekolah.", icon: "ri-macbook-line", c: "text-emerald-500" },
+            { title: "4. Tablet PC", desc: "Tablet adalah gawai pipih dengan layar sentuh yang lebar, namun tidak memiliki keyboard fisik seperti laptop. Untuk mengetik atau menggambar, kita cukup menyentuh layarnya langsung dengan jari atau menggunakan pena digital (stylus). Tablet sangat nyaman digunakan untuk membaca buku digital, menonton video pembelajaran, atau menggambar karya seni secara digital.", icon: "ri-tablet-line", c: "text-amber-500" },
+            { title: "5. Smartphone", desc: "Smartphone atau telepon pintar adalah komputer paling kecil yang ukurannya cukup untuk masuk ke dalam kantong baju atau saku celana. Meski kecil, smartphone bisa digunakan untuk menelepon, mengirim pesan, memotret, bermain game, dan mencari informasi di internet. Hampir semua orang dewasa di sekitar kita, seperti ibu, ayah, atau kakak, memiliki dan menggunakan smartphone setiap hari.", icon: "ri-smartphone-line", c: "text-rose-500" }
+          ]
+        },
+        topik2: {
+          title: "Topik 2: Pintu Data Input & Output",
+          audio_url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3",
+          video_url: "https://www.youtube.com/embed/wVnbWOMQQ3Y",
+          video_label: "Video Mengenal Alat Input dan Output",
+          kinestetik: "Pertama, ketuk-ketuk meja di depanmu sebanyak 3 kali dengan jari, seolah-olah kamu sedang mengetik huruf-huruf di papan ketik (keyboard). Ini melambangkan kegiatan INPUT, yaitu memberi perintah kepada komputer. Setelah itu, buka kedua telapak tanganmu lebar-lebar di depan wajahmu seperti sebuah layar yang sedang menampilkan gambar. Ini melambangkan kegiatan OUTPUT, yaitu hasil yang ditampilkan komputer. Ulangi gerakan ini sambil mengucapkan 'Input... lalu Output!' agar lebih mudah diingat.",
+          kinestetik_video: "",
+          visual: [
+            { title: "Keyboard Huruf", desc: "Keyboard atau papan ketik adalah alat INPUT yang memiliki banyak tombol huruf, angka, dan simbol. Saat kita menekan salah satu tombol, komputer akan menerima perintah tersebut dan menampilkan huruf atau angka di layar. Keyboard digunakan untuk mengetik nama, mengetik cerita, mencari informasi, atau memasukkan kata sandi.", icon: "ri-keyboard-line", c: "text-purple-500" },
+            { title: "Mouse Sensor", desc: "Mouse adalah alat INPUT yang digunakan untuk menggerakkan penunjuk (kursor) di layar komputer. Dengan menggeser mouse di atas meja dan menekan tombol klik, kita bisa memilih gambar, membuka aplikasi, atau menggambar di layar. Beberapa mouse juga memiliki roda kecil di tengah untuk menggulung tampilan ke atas dan ke bawah.", icon: "ri-mouse-line", c: "text-orange-500" },
+            { title: "Monitor/Layar", desc: "Monitor adalah alat OUTPUT utama yang menampilkan semua hasil pekerjaan komputer dalam bentuk gambar, huruf, warna, dan video. Tanpa monitor, kita tidak akan bisa melihat apa yang sedang dikerjakan oleh komputer. Ukuran monitor bermacam-macam, mulai dari yang kecil di smartphone sampai yang besar di ruang kelas untuk presentasi.", icon: "ri-computer-line", c: "text-blue-500" },
+            { title: "Printer Warna", desc: "Printer adalah alat OUTPUT yang berfungsi mencetak data dari komputer, seperti tulisan atau gambar, ke atas kertas. Setelah kita selesai mengetik tugas atau membuat gambar di komputer, printer dapat mencetaknya menjadi lembaran kertas yang bisa dibawa, ditempel, atau dikumpulkan kepada guru.", icon: "ri-printer-line", c: "text-emerald-500" }
+          ]
+        },
+        topik3: {
+          title: "Topik 3: Etika Perawatan Gawai",
+          audio_url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3",
+          video_url: "https://www.youtube.com/embed/G5uOBZEN7X8",
+          video_label: "Video Cara Merawat Gadget dengan Benar",
+          kinestetik: "Ambil kain bersih atau gunakan telapak tanganmu, lalu praktikkan gerakan menyeka permukaan meja atau buku secara lembut dengan arah memutar atau melingkar, seperti sedang membersihkan layar laptop dari debu. Lakukan gerakan ini secara perlahan dan hati-hati, jangan terlalu menekan. Setelah itu, praktikkan juga cara meletakkan benda (misalnya buku tulis sebagai pengganti laptop) di tempat yang aman, jauh dari tepi meja agar tidak mudah terjatuh, sambil didampingi oleh gurumu.",
+          kinestetik_video: "",
+          visual: [
+            { title: "Kain Serat Mikro", desc: "Kain serat mikro (microfiber) adalah kain khusus yang teksturnya sangat halus dan lembut, sehingga aman digunakan untuk membersihkan layar dan permukaan kaca gawai. Berbeda dengan tisu atau kain kasar yang bisa membuat layar tergores, kain serat mikro mampu mengangkat debu dan sidik jari tanpa meninggalkan bekas goresan. Gunakan kain ini dalam keadaan kering dan usap secara perlahan.", icon: "ri-hand-sanitizer-line", c: "text-rose-500" },
+            { title: "Hindari Air Minum", desc: "Air dan komputer adalah dua hal yang tidak boleh bertemu! Jika air tumpah ke atas keyboard, layar, atau bagian dalam laptop, komponen elektroniknya bisa rusak dan tidak bisa digunakan lagi. Oleh karena itu, sebaiknya botol minum, gelas, atau makanan berkuah diletakkan jauh dari meja komputer atau laptop saat sedang digunakan.", icon: "ri-cup-line", c: "text-red-500" },
+            { title: "Charge Teratur", desc: "Baterai pada laptop, tablet, dan smartphone perlu diisi ulang (di-charge) secara teratur agar gawai tetap bisa digunakan dengan baik. Sebaiknya isi daya sebelum baterai benar-benar habis, dan jangan biarkan gawai terus mengisi daya dalam waktu yang sangat lama setelah penuh, karena dapat membuat baterai cepat rusak. Gunakan juga charger asli yang sesuai dengan gawainya.", icon: "ri-battery-charge-line", c: "text-green-500" },
+            { title: "Simpan di Tempat Aman", desc: "Setelah selesai digunakan, gawai sebaiknya disimpan di tempat yang aman, tidak terkena sinar matahari langsung, jauh dari tepi meja, dan tidak diletakkan sembarangan di lantai. Suhu yang terlalu panas dan benturan keras dapat merusak komponen di dalam gawai. Menyimpan gawai dengan rapi juga membantu kita untuk menemukannya kembali dengan mudah saat dibutuhkan.", icon: "ri-shield-check-line", c: "text-blue-500" }
+          ]
+        }
+      };
+
+      const localKuisEmbed = [
+        { title: "Kuis Wordwall – Perangkat Komputer", platform: "Wordwall", icon: "ri-game-fill", color: "text-purple-500", badge_color: "bg-purple-100 dark:bg-purple-900/30 text-purple-600", embed_url: "https://wordwall.net/id/embed/cd1cd8b6bb394b9e8bfad438de580c47" }
+      ];
+
+      const gameDevices = [
+        { name: "Papan Ketik (Keyboard)", type: "INPUT" },
+        { name: "Tikus Klik (Mouse)", type: "INPUT" },
+        { name: "Layar TV Kaca (Monitor)", type: "OUTPUT" },
+        { name: "Mesin Cetak Kertas (Printer)", type: "OUTPUT" },
+        { name: "Alat Pemindai Gambar (Scanner)", type: "INPUT" },
+        { name: "Pengeras Suara (Speaker)", type: "OUTPUT" },
+        { name: "Tongkat Game (Joystick)", type: "INPUT" },
+        { name: "Pita Proyektor Sorot", type: "OUTPUT" },
+        { name: "Mikrofon Suara (Microphone)", type: "INPUT" },
+        { name: "Kamera Webcam", type: "INPUT" },
+        { name: "Headphone / Earphone", type: "OUTPUT" },
+        { name: "Layar Sentuh (Touchscreen)", type: "INPUT" },
+        { name: "Papan Gambar Digital (Pen Tablet)", type: "INPUT" },
+        { name: "Mesin Plotter Cetak Besar", type: "OUTPUT" },
+        { name: "Lampu Sorot Proyektor", type: "OUTPUT" },
+        { name: "Stik Trackpad Sentuh", type: "INPUT" }
+      ];
+
+      const quizBank = [
+        { q: "Urutan jenis komputer dari yang ukurannya paling RAKSASA ke yang paling mini/kecil adalah...", opts: ["Smartphone - Laptop - Mainframe", "Mainframe - Laptop - Smartphone", "Laptop - Smartphone - Mainframe"], ans: 1, expl: "Mainframe seukuran lemari besar, laptop seukuran tas jinjing, smartphone masuk kantong baju anak." },
+        { q: "Manakah di bawah ini perangkat komputer yang bertugas mengeluarkan HASIL CETAKAN visual gambar atau teks pada media kertas?", opts: ["Keyboard", "Mouse", "Printer Warna"], ans: 2, expl: "Printer adalah perangkat OUTPUT yang mencetak data digital ke kertas." },
+        { q: "Tindakan yang benar saat layar komputer berdebu adalah...", opts: ["Siram dengan air", "Seka dengan kain micro-fiber kering", "Biarkan saja"], ans: 1, expl: "Kain micro-fiber kering aman membersihkan layar tanpa goresan dan air." },
+        { q: "Komputer meja yang bagian CPU, monitor, keyboard, dan mouse-nya terpisah dan biasa ditemukan di ruang komputer sekolah disebut...", opts: ["Smartphone", "Desktop PC", "Tablet"], ans: 1, expl: "Desktop PC memiliki bagian-bagian terpisah dan biasanya menetap di satu meja." },
+        { q: "Gawai berlayar lebar yang dioperasikan dengan cara disentuh langsung pakai jari, tanpa keyboard fisik, adalah...", opts: ["Tablet PC", "Mainframe", "Printer"], ans: 0, expl: "Tablet PC menggunakan layar sentuh dan tidak memerlukan keyboard fisik." },
+        { q: "Mouse merupakan contoh perangkat...", opts: ["INPUT, karena memberi perintah ke komputer", "OUTPUT, karena menampilkan hasil", "Tidak termasuk perangkat apapun"], ans: 0, expl: "Mouse digunakan untuk memberi perintah/menggerakkan kursor, sehingga termasuk perangkat INPUT." },
+        { q: "Alat yang berfungsi mengubah suara menjadi data yang dapat diterima komputer disebut...", opts: ["Speaker", "Mikrofon", "Monitor"], ans: 1, expl: "Mikrofon adalah perangkat INPUT yang menangkap suara untuk diolah komputer." },
+        { q: "Manakah pasangan yang benar antara perangkat dan jenisnya?", opts: ["Speaker - INPUT", "Keyboard - OUTPUT", "Monitor - OUTPUT"], ans: 2, expl: "Monitor menampilkan hasil olahan komputer, sehingga termasuk perangkat OUTPUT." },
+        { q: "Agar baterai laptop atau tablet awet, sebaiknya kita...", opts: ["Mengisi daya secara teratur sebelum benar-benar habis", "Membiarkan baterai habis total setiap hari", "Mengisi daya dengan charger sembarang merek"], ans: 0, expl: "Mengisi daya secara teratur dan menggunakan charger asli membantu baterai lebih awet." },
+        { q: "Tempat menyimpan laptop yang paling tepat setelah selesai digunakan adalah...", opts: ["Di tepi meja dekat jendela yang panas", "Di tempat datar, aman, dan terhindar dari sinar matahari langsung", "Di lantai dekat pintu"], ans: 1, expl: "Menyimpan gawai di tempat aman dan sejuk mencegah kerusakan akibat panas atau benturan." },
+        { q: "Apa yang sebaiknya dilakukan jika ada minuman di dekat laptop yang sedang digunakan?", opts: ["Dibiarkan saja karena tidak masalah", "Dipindahkan jauh dari laptop agar tidak tumpah", "Diletakkan tepat di samping keyboard"], ans: 1, expl: "Air dapat merusak komponen elektronik di dalam laptop jika tumpah." }
+      ];
+
+      // ============================================================
+      // FUNGSI setConnStatus
+      // ============================================================
+      function setConnStatus(ok, label) {
+        const dot = document.getElementById("conn-dot");
+        const lbl = document.getElementById("conn-label");
+        if (dot && lbl) {
+          dot.className = `w-2 h-2 rounded-full ${ok ? 'bg-green-400' : 'bg-gray-400'} animate-pulse`;
+          lbl.innerText = label;
+        }
+      }
+
+      // ============================================================
+      // UTILITAS UMUM
+      // ============================================================
+      function showToast(msg, color = "blue") {
+        const toast = document.getElementById("notification-toast");
+        document.getElementById("toast-msg").innerText = msg;
+        toast.classList.add("show");
+        setTimeout(() => toast.classList.remove("show"), 2500);
+      }
+
+      function openModal(id) { document.getElementById(id).classList.add("open"); }
+      function closeModal(id) { document.getElementById(id).classList.remove("open"); }
+
+      function getStudentName(callback) {
+        const saved = localStorage.getItem("mpi_student_name");
+        if (saved) { callback(saved); return; }
+        Swal.fire({
+          title: "👋 Siapa nama kamu?",
+          input: "text",
+          inputPlaceholder: "Tulis nama lengkapmu...",
+          confirmButtonText: "Mulai!",
+          confirmButtonColor: "var(--blue)",
+          allowOutsideClick: false,
+          inputValidator: (value) => !value && "Nama tidak boleh kosong ya!"
+        }).then((res) => {
+          const name = (res.value || "Siswa").trim();
+          localStorage.setItem("mpi_student_name", name);
+          callback(name);
+        });
+      }
+
+      // ============================================================
+      // NAVIGASI SCREEN (dengan transisi 3D flip)
+      // ============================================================
+      function changeScreen(screenId) {
+        const screens = [
+          "screen-hero","screen-menu","screen-kompetensi",
+          "screen-materi-hub","screen-materi-viewer",
+          "screen-gameplay","screen-kuis-hub","screen-kuis",
+          "screen-kuis-embed-list"
+        ];
+        screens.forEach(s => {
+          const el = document.getElementById(s);
+          if (s === screenId) {
+            el.classList.remove("opacity-0","pointer-events-none","translate-x-full","translate-x-[-100%]","flip-out");
+            el.classList.add("opacity-100","flip-in");
+            setTimeout(() => el.classList.remove("flip-in"), 600);
+          } else {
+            el.classList.add("opacity-0","pointer-events-none","translate-x-full");
+            el.classList.remove("flip-in");
+          }
+        });
+        activeScreenId = screenId;
+        pulseBgParticles();
+      }
+
+      // ============================================================
+      // REMOTE DATA (Google Apps Script)
+      // ============================================================
+      async function fetchRemoteData() {
+        if (!GAS_URL) {
+          setConnStatus(false, "Lokal");
+          return;
+        }
+        try {
+          const res = await fetch(GAS_URL + "?action=getDashboardData");
+          const data = await res.json();
+          if (data.success) {
+            remoteData = data;
+            applyRemoteData(data);
+            setConnStatus(true, "Terhubung");
+          } else {
+            setConnStatus(false, "Error");
+          }
+        } catch(e) {
+          setConnStatus(false, "Offline");
+        }
+      }
+
+      function applyRemoteData(data) {
+        if (data.materi) {
+          Object.keys(data.materi).forEach(key => {
+            if (localDatabase[key]) {
+              const m = data.materi[key];
+              if (m.audio_url) localDatabase[key].audio_url = m.audio_url;
+              if (m.video_url) localDatabase[key].video_url = convertToEmbed(m.video_url);
+              if (m.kinestetik_video) localDatabase[key].kinestetik_video = convertToEmbed(m.kinestetik_video);
+              if (m.cp) document.getElementById("cp-text").innerText = m.cp;
+            }
+          });
+        }
+        if (data.kuis_embed && data.kuis_embed.length) {
+          renderKuisEmbedCards(data.kuis_embed);
+        }
+      }
+
+      function convertToEmbed(url) {
+        if(url.includes("youtube.com/watch?v=")) return url.replace("watch?v=", "embed/");
+        if(url.includes("youtu.be/")) return url.replace("youtu.be/", "youtube.com/embed/");
+        return url;
+      }
+
+      function refreshData() {
+        showToast("🔄 Menyegarkan sinkronisasi cloud...");
+        fetchRemoteData();
+      }
+
+      // ============================================================
+      // PROFIL — FOTO DARI GOOGLE DRIVE
+      // ============================================================
+      function applyProfilePhoto() {
+        if (!PROFILE_PHOTO_URL) return;
+
+        const toolbarImg = document.getElementById("profile-photo-toolbar");
+        const toolbarIcon = document.getElementById("profile-icon-toolbar");
+        const modalImg = document.getElementById("profile-photo-modal");
+        const modalIcon = document.getElementById("profile-icon-modal");
+
+        [toolbarImg, modalImg].forEach(img => {
+          img.src = PROFILE_PHOTO_URL;
+          img.classList.remove("hidden");
+        });
+        toolbarIcon.classList.add("hidden");
+        modalIcon.classList.add("hidden");
+
+        // Fallback jika gambar gagal dimuat (link salah / tidak publik)
+        toolbarImg.onerror = () => {
+          toolbarImg.classList.add("hidden");
+          toolbarIcon.classList.remove("hidden");
+        };
+        modalImg.onerror = () => {
+          modalImg.classList.add("hidden");
+          modalIcon.classList.remove("hidden");
+        };
+      }
+
+      // ============================================================
+      // MUSIC TOGGLE
+      // ============================================================
+      function toggleMusic() {
+        const audio = document.getElementById("bg-music");
+        const vis = document.getElementById("music-vis");
+        if (isMusicPlaying) {
+          audio.pause();
+          vis.classList.add("paused");
+          showToast("🔇 Musik dimatikan");
+        } else {
+          audio.volume = 0.25;
+          audio.play().catch(()=>{});
+          vis.classList.remove("paused");
+          showToast("🎵 Musik latar diputar");
+        }
+        isMusicPlaying = !isMusicPlaying;
+      }
+
+      // ============================================================
+      // THEME
+      // ============================================================
+      function toggleTheme() {
+        document.documentElement.classList.toggle("dark");
+        showToast(document.documentElement.classList.contains("dark") ? "🌙 Mode Gelap" : "☀️ Mode Terang");
+      }
+
+      // ============================================================
+      // PROFIL
+      // ============================================================
+      function openCreatorProfile() { openModal("profile-modal"); }
+
+      // ============================================================
+      // B. MATERI
+      // ============================================================
+      function openMateriSubmenu() { changeScreen("screen-materi-hub"); }
+
+      function selectMateriTopik(topikKey) {
+        currentTopikData = localDatabase[topikKey];
+        document.getElementById("txt-current-topik-title").innerText = currentTopikData.title;
+        document.getElementById("txt-kinestetik-desc").innerText = currentTopikData.kinestetik;
+
+        const container = document.getElementById("visual-content-cards");
+        container.innerHTML = "";
+        currentTopikData.visual.forEach(v => {
+          container.innerHTML += `
+            <div class="panel-solid p-3 rounded-xl flex items-center gap-3 border shadow-sm hover:shadow-md transition-shadow">
+              <div class="w-12 h-12 flex items-center justify-center rounded-xl bg-gray-100 dark:bg-gray-800 ${v.c} flex-shrink-0">
+                <i class="${v.icon} text-2xl"></i>
+              </div>
+              <div>
+                <h5 class="font-extrabold text-xs">${v.title}</h5>
+                <p class="text-[10px] text-[var(--text-muted)] mt-0.5">${v.desc}</p>
+              </div>
+            </div>`;
+        });
+
+        renderAudioVisualCards();
+        switchGayaBelajar("visual");
+
+        const videoUrl = currentTopikData.video_url || "";
+        document.getElementById("materi-video-iframe").src = videoUrl;
+        document.getElementById("video-label-text").innerText = currentTopikData.video_label || "Video Materi";
+        document.getElementById("video-open-link").href = videoUrl.replace("/embed/", "/watch?v=");
+
+        // Video kinestetik bersifat opsional — sembunyikan jika kosong
+        const kinVideoWrap = document.getElementById("kinestetik-video-wrap");
+        const kinVideoIframe = document.getElementById("kinestetik-video-iframe");
+        const kinVideoUrl = currentTopikData.kinestetik_video || "";
+        if (kinVideoUrl) {
+          kinVideoIframe.src = kinVideoUrl;
+          kinVideoWrap.classList.remove("hidden");
+        } else {
+          kinVideoIframe.src = "";
+          kinVideoWrap.classList.add("hidden");
+        }
+
+        markTopikSelesai(topikKey);
+        changeScreen("screen-materi-viewer");
+      }
+
+      function switchGayaBelajar(gayaType) {
+        document.querySelectorAll(".materi-gaya-content").forEach(v => v.classList.add("hidden"));
+        document.querySelectorAll(".materi-tab-btn").forEach(b => b.classList.remove("active"));
+
+        if (gayaType === 'visual') { document.getElementById("view-visual").classList.remove("hidden"); document.getElementById("tab-visual").classList.add("active"); }
+        if (gayaType === 'audio') { document.getElementById("view-audio").classList.remove("hidden"); document.getElementById("tab-audio").classList.add("active"); }
+        if (gayaType === 'video') { document.getElementById("view-video").classList.remove("hidden"); document.getElementById("tab-video").classList.add("active"); }
+        if (gayaType === 'kinestetik') { document.getElementById("view-kinestetik").classList.remove("hidden"); document.getElementById("tab-kinestetik").classList.add("active"); }
+
+        if(gayaType !== 'audio') { stopAudioMateriPlay(); }
+
+        // Hentikan video YouTube saat pindah tab agar tidak terus berputar di belakang
+        if(gayaType !== 'video') { stopEmbeddedVideo("materi-video-iframe"); }
+        if(gayaType !== 'kinestetik') { stopEmbeddedVideo("kinestetik-video-iframe"); }
+      }
+
+      function stopEmbeddedVideo(iframeId) {
+        const iframe = document.getElementById(iframeId);
+        if (iframe && iframe.src) {
+          const src = iframe.src;
+          iframe.src = "";
+          iframe.src = src;
+        }
+      }
+
+      // ============================================================
+      // AUDIO MATERI — VISUAL CARDS + TEXT TO SPEECH
+      // ============================================================
+      let audioTtsIndex = 0;
+      let audioTtsPlaying = false;
+      let audioTtsMode = "all"; // "all" atau "single"
+
+      function renderAudioVisualCards() {
+        const container = document.getElementById("audio-content-cards");
+        if (!container || !currentTopikData) return;
+        container.innerHTML = "";
+        currentTopikData.visual.forEach((v, idx) => {
+          container.innerHTML += `
+            <div class="audio-card panel-solid p-3 rounded-xl flex items-center gap-3 border shadow-sm" data-idx="${idx}">
+              <div class="audio-card-icon w-12 h-12 flex items-center justify-center rounded-xl bg-gray-100 dark:bg-gray-800 ${v.c} flex-shrink-0">
+                <i class="${v.icon} text-2xl"></i>
+              </div>
+              <div class="flex-1 min-w-0">
+                <h5 class="font-extrabold text-xs">${v.title}</h5>
+                <p class="text-[10px] text-[var(--text-muted)] mt-0.5">${v.desc}</p>
+              </div>
+              <button onclick="speakSingleAudioCard(${idx})" class="w-9 h-9 rounded-lg bg-blue-50 dark:bg-blue-950/30 text-blue-500 flex items-center justify-center flex-shrink-0">
+                <i class="fa-solid fa-volume-up text-xs"></i>
+              </button>
+            </div>`;
+        });
+        resetAudioProgress();
+      }
+
+      function resetAudioProgress() {
+        document.getElementById("audio-progress-bar").style.width = "0%";
+        document.getElementById("audio-progress-label").innerText = "Tekan putar untuk mulai mendengarkan";
+        document.querySelectorAll("#audio-content-cards .audio-card").forEach(c => c.classList.remove("audio-card-active"));
+      }
+
+      function setAudioPlayIcon(playing) {
+        const icon = document.getElementById("audio-play-icon");
+        const label = document.getElementById("audio-play-label");
+        if (!icon || !label) return;
+        if (playing) {
+          icon.className = "fa-solid fa-pause";
+          label.innerText = "Berhenti Sebentar";
+        } else {
+          icon.className = "fa-solid fa-play";
+          label.innerText = "Putar Semua";
+        }
+      }
+
+      function toggleAudioMateriPlay() {
+        if (!currentTopikData) return;
+
+        if (audioTtsPlaying) {
+          // Sedang berbicara -> jeda (pause)
+          window.speechSynthesis.pause();
+          audioTtsPlaying = false;
+          setAudioPlayIcon(false);
+        } else if (window.speechSynthesis.paused && audioTtsMode === "all") {
+          // Lanjutkan dari posisi jeda
+          window.speechSynthesis.resume();
+          audioTtsPlaying = true;
+          setAudioPlayIcon(true);
+        } else {
+          // Mulai dari awal
+          audioTtsMode = "all";
+          audioTtsIndex = 0;
+          audioTtsPlaying = true;
+          setAudioPlayIcon(true);
+          window.speechSynthesis.cancel();
+          speakAudioCardAtIndex(0);
+        }
+      }
+
+      function stopAudioMateriPlay() {
+        window.speechSynthesis.cancel();
+        audioTtsPlaying = false;
+        setAudioPlayIcon(false);
+        resetAudioProgress();
+      }
+
+      function speakAudioCardAtIndex(idx) {
+        if (!currentTopikData) return;
+        const cards = document.querySelectorAll("#audio-content-cards .audio-card");
+        cards.forEach(c => c.classList.remove("audio-card-active"));
+
+        if (idx >= currentTopikData.visual.length) {
+          audioTtsPlaying = false;
+          setAudioPlayIcon(false);
+          document.getElementById("audio-progress-bar").style.width = "100%";
+          document.getElementById("audio-progress-label").innerText = "Selesai! Semua kartu sudah dibacakan ✅";
+          return;
+        }
+
+        const v = currentTopikData.visual[idx];
+        const card = cards[idx];
+        if (card) card.classList.add("audio-card-active");
+
+        document.getElementById("audio-progress-label").innerText = `Membacakan kartu ${idx + 1} dari ${currentTopikData.visual.length}: ${v.title}`;
+        const pct = (idx / currentTopikData.visual.length) * 100;
+        document.getElementById("audio-progress-bar").style.width = pct + "%";
+
+        const utter = new SpeechSynthesisUtterance(v.title + ". " + v.desc);
+        utter.lang = "id-ID";
+        utter.rate = 0.95;
+        utter.onend = () => {
+          if (audioTtsMode === "all" && audioTtsPlaying) {
+            audioTtsIndex = idx + 1;
+            speakAudioCardAtIndex(audioTtsIndex);
+          } else if (audioTtsMode === "single") {
+            if (card) card.classList.remove("audio-card-active");
+            audioTtsPlaying = false;
+            setAudioPlayIcon(false);
+          }
+        };
+        window.speechSynthesis.speak(utter);
+      }
+
+      function speakSingleAudioCard(idx) {
+        if (!currentTopikData) return;
+        window.speechSynthesis.cancel();
+        audioTtsMode = "single";
+        audioTtsPlaying = true;
+        speakAudioCardAtIndex(idx);
+      }
+
+      function speakMateriText() {
+        if(!currentTopikData) return;
+        let speech = new SpeechSynthesisUtterance();
+        speech.lang = "id-ID";
+        let textStr = currentTopikData.title + ". ";
+        currentTopikData.visual.forEach(v => { textStr += v.title + ": " + v.desc + ". "; });
+        speech.text = textStr;
+        speech.rate = 0.95;
+        window.speechSynthesis.cancel();
+        window.speechSynthesis.speak(speech);
+        showToast("📢 Teks Dibacakan Robot Suara");
+      }
+
+      // ============================================================
+      // PROGRESS TRACKER (CP/TP)
+      // ============================================================
+      function getProgressData() {
+        return JSON.parse(localStorage.getItem("mpi_progress") || "{}");
+      }
+
+      function markTopikSelesai(topikKey) {
+        const progress = getProgressData();
+        progress[topikKey] = true;
+        localStorage.setItem("mpi_progress", JSON.stringify(progress));
+        updateProgressUI();
+      }
+
+      function updateProgressUI() {
+        const progress = getProgressData();
+        const totalTopik = 3;
+        let doneCount = 0;
+
+        document.querySelectorAll(".progress-step").forEach(step => {
+          const key = step.dataset.topik;
+          if (progress[key]) {
+            step.classList.add("done");
+            doneCount++;
+          } else {
+            step.classList.remove("done");
+          }
+        });
+
+        document.querySelectorAll(".materi-done-badge").forEach(badge => {
+          const key = badge.dataset.topikBadge;
+          if (progress[key]) badge.classList.remove("hidden");
+          else badge.classList.add("hidden");
+        });
+
+        const pct = Math.round((doneCount / totalTopik) * 100);
+        const ring = document.getElementById("progress-ring-fg");
+        const text = document.getElementById("progress-ring-text");
+        if (ring && text) {
+          const circumference = 113; // 2 * PI * r(18)
+          ring.style.strokeDashoffset = circumference - (circumference * pct / 100);
+          text.innerText = pct + "%";
+        }
+      }
+
+      // ============================================================
+      // C. GAME ENGINE
+      // ============================================================
+      function openGameSelection() { changeScreen("screen-gameplay"); switchGameMode("solo"); }
+
+      function switchGameMode(mode) {
+        gameMode = mode;
+        const soloCls = "w-full py-2 rounded-xl text-xs font-bold text-left px-3 border transition-all flex items-center justify-between";
+        const battleCls = soloCls;
+
+        document.getElementById("btn-mode-solo").className = mode === "solo" ? soloCls + " bg-blue-50/50 border-blue-400" : soloCls;
+        document.getElementById("btn-mode-battle").className = mode === "battle" ? battleCls + " bg-red-50/50 border-red-400" : battleCls;
+
+        if (mode === "solo") {
+          document.getElementById("solo-game-container").classList.remove("hidden");
+          document.getElementById("battle-game-container").classList.add("hidden");
+          soloCorrect = 0; soloWrong = 0;
+          updateSoloStats(); nextSoloQuestion();
+        } else {
+          document.getElementById("solo-game-container").classList.add("hidden");
+          document.getElementById("battle-game-container").classList.remove("hidden");
+          scoreP1 = 0; scoreP2 = 0;
+          updateBattleUI(); nextBattleRound();
+        }
+      }
+
+      function nextSoloQuestion() {
+        currentSoloQuest = gameDevices[Math.floor(Math.random() * gameDevices.length)];
+        document.getElementById("txt-solo-quest").innerText = currentSoloQuest.name;
+      }
+
+      function updateSoloStats() {
+        document.getElementById("solo-correct").innerText = soloCorrect;
+        document.getElementById("solo-wrong").innerText = soloWrong;
+      }
+
+      function submitSoloGameAnswer(ans) {
+        if (ans === currentSoloQuest.type) {
+          soloCorrect++; sessionScore += 5; updateSessionScore();
+          playSfx("correct");
+          showToast("✅ Benar! +5");
+        } else {
+          soloWrong++;
+          playSfx("wrong");
+          showToast("❌ Kurang tepat! Jawaban: " + currentSoloQuest.type);
+        }
+        updateSoloStats(); nextSoloQuestion();
+      }
+
+      function updateSessionScore() { document.getElementById("txt-session-score").innerText = sessionScore; }
+
+      function nextBattleRound() {
+        battleQ1 = gameDevices[Math.floor(Math.random() * gameDevices.length)];
+        do { battleQ2 = gameDevices[Math.floor(Math.random() * gameDevices.length)]; } while (battleQ1 === battleQ2);
+        document.getElementById("txt-p1-quest").innerText = battleQ1.name;
+        document.getElementById("txt-p2-quest").innerText = battleQ2.name;
+      }
+
+      function updateBattleUI() {
+        document.getElementById("battle-score-p1").innerText = "Skor: " + scoreP1;
+        document.getElementById("battle-score-p2").innerText = "Skor: " + scoreP2;
+        document.getElementById("p1-progress").style.width = (scoreP1 / 50 * 100) + "%";
+        document.getElementById("p2-progress").style.width = (scoreP2 / 50 * 100) + "%";
+      }
+
+      function submitBattleAnswer(pNum, ans) {
+        if (pNum === 1) {
+          if (ans === battleQ1.type) { scoreP1 += 10; playSfx("correct"); showToast("🔵 P1 Benar! +10"); }
+          else { scoreP1 = Math.max(0, scoreP1 - 5); playSfx("wrong"); showToast("🔵 P1 Salah! -5"); }
+        } else {
+          if (ans === battleQ2.type) { scoreP2 += 10; playSfx("correct"); showToast("🔴 P2 Benar! +10"); }
+          else { scoreP2 = Math.max(0, scoreP2 - 5); playSfx("wrong"); showToast("🔴 P2 Salah! -5"); }
+        }
+        updateBattleUI();
+        if (scoreP1 >= 50 || scoreP2 >= 50) {
+          let winner = scoreP1 >= 50 ? "Player 1 (Kiri) 🔵" : "Player 2 (Kanan) 🔴";
+          playSfx("win");
+          fireConfetti();
+          Swal.fire({ title: "Game Over! 🏁", text: `${winner} menang sebagai Raja Taktil Tercepat!`, icon: "success", confirmButtonText: "Selesai" });
+          switchGameMode("solo");
+        } else {
+          nextBattleRound();
+        }
+      }
+
+      function startGameTimer() {
+        clearInterval(gameTimerInterval);
+        gameTimerSeconds = 0;
+        gameTimerInterval = setInterval(() => {
+          gameTimerSeconds++;
+          let m = String(Math.floor(gameTimerSeconds / 60)).padStart(2,'0');
+          let s = String(gameTimerSeconds % 60).padStart(2,'0');
+          document.getElementById("game-timer-display").innerText = m + ":" + s;
+        }, 1000);
+        showToast("⏱️ Timer permainan dimulai!");
+      }
+
+      function resetGameTimer() {
+        clearInterval(gameTimerInterval);
+        document.getElementById("game-timer-display").innerText = "00:00";
+        showToast("⏱️ Timer di-reset.");
+      }
+
+      // ============================================================
+      // D. KUIS CLOUD EMBED & KUIS INTERNAL
+      // ============================================================
+      function renderKuisEmbedCards(arr) {
+        const wrap = document.getElementById("kuis-embed-list-container");
+        if(!wrap) return;
+        wrap.innerHTML = "";
+        arr.forEach((item, idx) => {
+          wrap.innerHTML += `
+            <div onclick="openKuisEmbed(${idx})" class="card-game-select glass-panel p-4 rounded-2xl cursor-pointer flex items-center gap-4 border hover:border-blue-400 transition-all">
+              <div class="w-12 h-12 flex-shrink-0 rounded-xl bg-gray-100 dark:bg-gray-800 flex items-center justify-center ${item.color || 'text-blue-500'}">
+                <i class="${item.icon || 'ri-external-link-line'} text-2xl"></i>
+              </div>
+              <div class="flex-1 min-w-0">
+                <h4 class="font-bold text-sm truncate">${item.title}</h4>
+                <div class="flex items-center gap-2 mt-1">
+                  <span class="text-[10px] font-bold px-2 py-0.5 rounded-full ${item.badge_color || 'bg-blue-100 text-blue-600'}">${item.platform}</span>
+                </div>
+              </div>
+              <i class="fa-solid fa-chevron-right text-[var(--text-muted)] text-sm flex-shrink-0"></i>
+            </div>`;
+        });
+      }
+
+      document.getElementById("screen-kuis-embed-list").addEventListener("transitionend", () => {
+        if (!document.getElementById("screen-kuis-embed-list").classList.contains("opacity-0")) {
+          const data = (remoteData && remoteData.kuis_embed && remoteData.kuis_embed.length) ? remoteData.kuis_embed : localKuisEmbed;
+          renderKuisEmbedCards(data);
+        }
+      });
+
+      function openKuisEmbed(idx) {
+        const data = (remoteData && remoteData.kuis_embed && remoteData.kuis_embed.length) ? remoteData.kuis_embed : localKuisEmbed;
+        const item = data[idx];
+        if (!item) return;
+        document.getElementById("quiz-embed-title").innerText = item.title;
+        document.getElementById("quiz-embed-iframe").src = item.embed_url || item.direct_url;
+        document.getElementById("quiz-embed-open").href = item.direct_url || item.embed_url;
+        openModal("quiz-embed-modal");
+      }
+
+      function startQuiz() {
+        getStudentName(() => {
+          currentQuizIdx = 0; quizScore = 0; changeScreen("screen-kuis"); renderQuizQuestion();
+        });
+      }
+
+      function renderQuizQuestion() {
+        clearInterval(quizTimerInterval);
+        quizTimeLeft = 30;
+        document.getElementById("txt-quiz-hud").innerText = `Soal ${currentQuizIdx+1} / ${quizBank.length}`;
+        document.getElementById("txt-quiz-timer").innerText = quizTimeLeft + "s";
+
+        const dots = document.getElementById("quiz-progress-dots");
+        dots.innerHTML = "";
+        quizBank.forEach((_, i) => {
+          dots.innerHTML += `<span class="w-2 h-2 rounded-full ${i === currentQuizIdx ? 'bg-amber-500' : i < currentQuizIdx ? 'bg-green-500' : 'bg-gray-300'}"></span>`;
+        });
+
+        const qNode = quizBank[currentQuizIdx];
+        document.getElementById("txt-quiz-question").innerText = qNode.q;
+        const optBox = document.getElementById("quiz-options-box");
+        optBox.innerHTML = "";
+
+        qNode.opts.forEach((o, i) => {
+          optBox.innerHTML += `<button onclick="handleQuizAnswer(${i})" class="opt-btn w-full text-left p-3.5 rounded-xl text-xs font-bold font-display flex items-center justify-between"><span>${i+1}. ${o}</span><i class="ri-checkbox-blank-circle-line text-xs opacity-40"></i></button>`;
+        });
+
+        quizTimerInterval = setInterval(() => {
+          quizTimeLeft--;
+          document.getElementById("txt-quiz-timer").innerText = quizTimeLeft + "s";
+          if (quizTimeLeft <= 0) { clearInterval(quizTimerInterval); handleQuizAnswer(-1); }
+        }, 1000);
+      }
+
+      function handleQuizAnswer(selectedIdx) {
+        clearInterval(quizTimerInterval);
+        const qNode = quizBank[currentQuizIdx];
+        const correctIdx = qNode.ans;
+        const isCorrect = (selectedIdx === correctIdx);
+
+        if (isCorrect) { quizScore += 20; sessionScore += 10; updateSessionScore(); playSfx("correct"); showToast("🎯 Jawaban Tepat! +20", "green"); }
+        else { playSfx("wrong"); showToast("💥 Kurang Tepat!", "red"); }
+
+        const btns = document.querySelectorAll("#quiz-options-box .opt-btn");
+        btns.forEach((btn, i) => {
+          btn.onclick = null;
+          if (i === correctIdx) btn.classList.add("correct");
+          else if (i === selectedIdx && !isCorrect) btn.classList.add("wrong");
+        });
+
+        setTimeout(() => {
+          if (currentQuizIdx + 1 < quizBank.length) { currentQuizIdx++; renderQuizQuestion(); }
+          else { finishQuiz(); }
+        }, 1200);
+      }
+
+      // ============================================================
+      // FITUR: KIRIM DATA SKOR KE CLOUD SPREADSHEET
+      // ============================================================
+      async function kirimSkorKeSpreadsheet(nama, skor, topik) {
+        if (!GAS_URL) return;
+        try {
+          await fetch(GAS_URL, {
+            method: "POST",
+            mode: "no-cors",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ action: "saveScore", nama: nama, skor: skor, topik: topik })
+          });
+          showToast("💾 Skor otomatis tersimpan ke cloud!");
+        } catch (e) {
+          console.error("Gagal mengirim data skor:", e);
+        }
+      }
+
+      function finishQuiz() {
+        const total = quizBank.length * 20;
+        const pct = Math.round((quizScore / total) * 100);
+        const grade = pct >= 80 ? "A" : pct >= 60 ? "B" : pct >= 40 ? "C" : "D";
+        const emoji = pct >= 80 ? "🏆" : pct >= 60 ? "🎯" : "💪";
+        const studentName = localStorage.getItem("mpi_student_name") || "Siswa";
+
+        saveLeaderboardScore(quizScore, studentName);
+        kirimSkorKeSpreadsheet(studentName, quizScore, "Kuis Internal Hardware");
+
+        lastQuizResult = { name: studentName, score: quizScore, total, pct, grade };
+
+        if (pct >= 80) { playSfx("win"); fireConfetti(); }
+        else if (pct >= 60) { playSfx("correct"); }
+        else { playSfx("wrong"); }
+
+        Swal.fire({
+          title: `Kuis Selesai! ${emoji}`,
+          html: `
+            <div style="font-family:'Plus Jakarta Sans',sans-serif;padding:8px">
+              <div style="font-size:48px;font-weight:900;color:var(--blue)">${quizScore}<span style="font-size:16px;color:var(--text-muted)"> / ${total}</span></div>
+              <div style="font-size:32px;font-weight:900;margin:4px 0">Grade: ${grade}</div>
+              <div style="font-size:12px;color:var(--text-muted)">${pct}% Ketercapaian · ${pct >= 80 ? 'Lulus ✓' : 'Perlu Remedial'}</div>
+            </div>`,
+          icon: pct >= 80 ? "success" : "info",
+          confirmButtonText: pct >= 80 ? "🎓 Lihat Sertifikat" : "Kembali ke Menu",
+          showCancelButton: pct >= 80,
+          cancelButtonText: "Kembali ke Menu",
+          confirmButtonColor: "var(--blue)",
+          allowOutsideClick: false,
+        }).then((res) => {
+          if (pct >= 80 && res.isConfirmed) {
+            openCertificate();
+          } else {
+            changeScreen("screen-menu");
+          }
+        });
+      }
+
+      // ============================================================
+      // SERTIFIKAT PENCAPAIAN
+      // ============================================================
+      function openCertificate() {
+        if (!lastQuizResult) return;
+        document.getElementById("cert-student-name").innerText = lastQuizResult.name;
+        document.getElementById("cert-score").innerText = lastQuizResult.score + "/" + lastQuizResult.total;
+        document.getElementById("cert-grade").innerText = lastQuizResult.grade;
+        document.getElementById("cert-date").innerText = new Date().toLocaleDateString("id-ID", { day: "numeric", month: "long", year: "numeric" });
+        openModal("certificate-modal");
+      }
+
+      function printCertificate() {
+        window.print();
+      }
+
+      // ============================================================
+      // LEADERBOARD (Lokal + Cloud)
+      // ============================================================
+      function saveLeaderboardScore(score, studentName) {
+        const now = new Date();
+        const entry = {
+          score,
+          time: now.toLocaleString("id-ID"),
+          name: studentName || `Siswa ${now.getHours()}:${String(now.getMinutes()).padStart(2,'0')}`
+        };
+        const lb = JSON.parse(localStorage.getItem("mpi_leaderboard") || "[]");
+        lb.push(entry);
+        lb.sort((a, b) => b.score - a.score);
+        localStorage.setItem("mpi_leaderboard", JSON.stringify(lb.slice(0, 10)));
+      }
+
+      function switchLeaderboardTab(tab) {
+        document.getElementById("lb-tab-local").classList.toggle("active", tab === "local");
+        document.getElementById("lb-tab-cloud").classList.toggle("active", tab === "cloud");
+        if (tab === "local") {
+          renderLeaderboard(JSON.parse(localStorage.getItem("mpi_leaderboard") || "[]"), false);
+        } else {
+          renderLeaderboardLoading();
+          fetchCloudLeaderboard();
+        }
+      }
+
+      function renderLeaderboardLoading() {
+        document.getElementById("leaderboard-list").innerHTML = `<p class="text-xs text-[var(--text-muted)] text-center py-4"><i class="fa-solid fa-spinner fa-spin mr-1"></i> Memuat skor cloud...</p>`;
+      }
+
+      async function fetchCloudLeaderboard() {
+        if (!GAS_URL) {
+          document.getElementById("leaderboard-list").innerHTML = `<p class="text-xs text-[var(--text-muted)] text-center py-4">☁️ GAS_URL belum diisi, papan skor cloud tidak tersedia.</p>`;
+          return;
+        }
+        try {
+          const res = await fetch(GAS_URL + "?action=getLeaderboard");
+          const data = await res.json();
+          if (data.success) {
+            renderLeaderboard(data.leaderboard || [], true);
+          } else {
+            document.getElementById("leaderboard-list").innerHTML = `<p class="text-xs text-[var(--text-muted)] text-center py-4">Gagal memuat papan skor cloud.</p>`;
+          }
+        } catch (e) {
+          document.getElementById("leaderboard-list").innerHTML = `<p class="text-xs text-[var(--text-muted)] text-center py-4">Tidak dapat terhubung ke cloud.</p>`;
+        }
+      }
+
+      function renderLeaderboard(lb, isCloud) {
+        const container = document.getElementById("leaderboard-list");
+        if(!container) return;
+        container.innerHTML = "";
+
+        if (!lb || lb.length === 0) {
+          container.innerHTML = `<p class="text-xs text-[var(--text-muted)] text-center py-4">Belum ada rekam skor ${isCloud ? 'cloud' : 'lokal'} saat ini.</p>`;
+          return;
+        }
+
+        lb.forEach((item, i) => {
+          let rankClass = i === 0 ? "lb-rank-1" : i === 1 ? "lb-rank-2" : i === 2 ? "lb-rank-3" : "";
+          let badge = i === 0 ? "🥇" : i === 1 ? "🥈" : i === 2 ? "🥉" : `${i+1}`;
+          const score = isCloud ? item.score : item.score;
+          container.innerHTML += `
+            <div class="lb-row panel-solid px-3 py-2 rounded-xl flex items-center justify-between text-xs border ${rankClass}">
+              <div class="flex items-center gap-2">
+                <span class="font-bold">${badge}</span>
+                <div>
+                  <div class="font-extrabold">${item.name}</div>
+                  <div class="text-[9px] text-[var(--text-muted)]">${item.time}</div>
+                </div>
+              </div>
+              <div class="font-black text-blue-500 text-sm">${score} Pts</div>
+            </div>`;
+        });
+      }
+
+      function clearLeaderboard() {
+        localStorage.removeItem("mpi_leaderboard");
+        switchLeaderboardTab('local');
+        showToast("🧹 Papan skor lokal berhasil dibersihkan!");
+      }
+
+      // ============================================================
+      // SFX (Web Audio API beep + dukungan SFX kustom dari cloud)
+      // ============================================================
+      function getAudioCtx() {
+        if (!audioCtx) {
+          audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        }
+        return audioCtx;
+      }
+
+      function beep(freqs, duration = 0.12, type = "sine") {
+        try {
+          const ctx = getAudioCtx();
+          freqs.forEach((f, idx) => {
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.type = type;
+            osc.frequency.value = f;
+            gain.gain.value = 0.18;
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            const startTime = ctx.currentTime + idx * 0.08;
+            osc.start(startTime);
+            gain.gain.exponentialRampToValueAtTime(0.0001, startTime + duration);
+            osc.stop(startTime + duration + 0.02);
+          });
+        } catch (e) { /* ignore audio errors */ }
+      }
+
+      function playSfx(type) {
+        // Gunakan SFX kustom dari spreadsheet jika tersedia
+        const sfxKey = type === "correct" ? "sfx_benar" : type === "wrong" ? "sfx_salah" : "sfx_menang";
+        if (remoteData && remoteData.sfx && remoteData.sfx[sfxKey]) {
+          const a = new Audio(remoteData.sfx[sfxKey]);
+          a.volume = 0.6;
+          a.play().catch(() => beepFallback(type));
+          return;
+        }
+        beepFallback(type);
+      }
+
+      function beepFallback(type) {
+        if (type === "correct") beep([523.25, 659.25, 783.99], 0.15, "triangle");
+        else if (type === "wrong") beep([220, 165], 0.2, "sawtooth");
+        else if (type === "win") beep([523.25, 659.25, 783.99, 1046.5], 0.22, "triangle");
+      }
+
+      // ============================================================
+      // KONFETI 🎉
+      // ============================================================
+      function fireConfetti() {
+        if (typeof confetti !== "function") return;
+        const colors = ["#2f6fed", "#8b5cf6", "#2bb673", "#f2a93b", "#ff6b5b"];
+        confetti({ particleCount: 120, spread: 80, origin: { y: 0.6 }, colors });
+        setTimeout(() => confetti({ particleCount: 80, spread: 100, origin: { y: 0.4 }, colors }), 250);
+      }
+
+      // ============================================================
+      // ENGINE FULLSCREEN
+      // ============================================================
+      function toggleFullscreen() {
+        const icon = document.getElementById("fs-icon");
+        if (!document.fullscreenElement) {
+          document.documentElement.requestFullscreen().then(() => { icon.className = "fa-solid fa-compress text-sm"; }).catch(()=>{});
+        } else {
+          document.exitFullscreen().then(() => { icon.className = "fa-solid fa-expand text-sm fs-pulse"; });
+        }
+      }
+
+      // ============================================================
+      // BACKGROUND ANIMASI THREE.JS — "GAWAI MENGAMBANG"
+      // ============================================================
+      let scene, camera, renderer;
+      let deviceShapes = [];
+      let bgParticles;
+
+      function init3DBackground() {
+        const container = document.getElementById("three-bg-container");
+        if (!container) return;
+
+        scene = new THREE.Scene();
+        camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        camera.position.z = 6;
+        renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        container.appendChild(renderer.domElement);
+
+        const palette = [0x2f6fed, 0x8b5cf6, 0x2bb673, 0xf2a93b, 0xff6b5b];
+
+        // Bentuk wireframe gawai: laptop (box pipih), smartphone (box tinggi),
+        // monitor (box lebar), tablet (box sedang)
+        const shapeDefs = [
+          { geom: new THREE.BoxGeometry(1.6, 1.0, 0.08), color: palette[0] }, // laptop / monitor
+          { geom: new THREE.BoxGeometry(0.5, 1.0, 0.08), color: palette[1] }, // smartphone
+          { geom: new THREE.BoxGeometry(1.1, 0.8, 0.08), color: palette[2] }, // tablet
+          { geom: new THREE.BoxGeometry(1.3, 0.9, 0.08), color: palette[3] }, // layar
+          { geom: new THREE.BoxGeometry(0.6, 1.1, 0.08), color: palette[4] }  // gawai mini
+        ];
+
+        deviceShapes = [];
+        const count = 14;
+        for (let i = 0; i < count; i++) {
+          const def = shapeDefs[i % shapeDefs.length];
+          const edges = new THREE.EdgesGeometry(def.geom);
+          const mat = new THREE.LineBasicMaterial({ color: def.color, transparent: true, opacity: 0.35 });
+          const mesh = new THREE.LineSegments(edges, mat);
+
+          mesh.position.set(
+            (Math.random() - 0.5) * 14,
+            (Math.random() - 0.5) * 9,
+            (Math.random() - 0.5) * 8 - 2
+          );
+          mesh.rotation.set(Math.random() * Math.PI, Math.random() * Math.PI, Math.random() * Math.PI);
+
+          mesh.userData = {
+            rotSpeedX: (Math.random() - 0.5) * 0.004,
+            rotSpeedY: (Math.random() - 0.5) * 0.006,
+            floatSpeed: 0.2 + Math.random() * 0.4,
+            floatRange: 0.3 + Math.random() * 0.5,
+            floatOffset: Math.random() * Math.PI * 2,
+            baseY: mesh.position.y
+          };
+
+          scene.add(mesh);
+          deviceShapes.push(mesh);
+        }
+
+        // Partikel titik-titik kecil sebagai "data points"
+        const pGeom = new THREE.BufferGeometry();
+        const pos = new Float32Array(120 * 3);
+        for (let i = 0; i < 120 * 3; i++) { pos[i] = (Math.random() - 0.5) * 16; }
+        pGeom.setAttribute("position", new THREE.BufferAttribute(pos, 3));
+        bgParticles = new THREE.Points(pGeom, new THREE.PointsMaterial({ size: 0.05, color: 0x2f6fed, transparent: true, opacity: 0.4 }));
+        scene.add(bgParticles);
+
+        animate3D();
+      }
+
+      let clockStart = Date.now();
+      function animate3D() {
+        requestAnimationFrame(animate3D);
+        const t = (Date.now() - clockStart) / 1000;
+
+        deviceShapes.forEach(mesh => {
+          mesh.rotation.x += mesh.userData.rotSpeedX;
+          mesh.rotation.y += mesh.userData.rotSpeedY;
+          mesh.position.y = mesh.userData.baseY + Math.sin(t * mesh.userData.floatSpeed + mesh.userData.floatOffset) * mesh.userData.floatRange;
+        });
+
+        if (bgParticles) {
+          bgParticles.rotation.y += 0.0008;
+          bgParticles.rotation.x += 0.0003;
+        }
+
+        if (renderer && scene && camera) renderer.render(scene, camera);
+      }
+
+      // Efek kecil saat pindah screen: gawai sedikit berputar cepat sesaat
+      function pulseBgParticles() {
+        deviceShapes.forEach(mesh => {
+          mesh.userData.rotSpeedX *= 2.2;
+          mesh.userData.rotSpeedY *= 2.2;
+        });
+        setTimeout(() => {
+          deviceShapes.forEach(mesh => {
+            mesh.userData.rotSpeedX /= 2.2;
+            mesh.userData.rotSpeedY /= 2.2;
+          });
+        }, 600);
+      }
+
+      window.addEventListener("resize", () => {
+        if (camera && renderer) {
+          camera.aspect = window.innerWidth / window.innerHeight;
+          camera.updateProjectionMatrix();
+          renderer.setSize(window.innerWidth, window.innerHeight);
+        }
+      });
+
+      // ============================================================
+      // INITIALIZATION DENGAN SISTEM ANTI-STUCK
+      // ============================================================
+      window.onload = function() {
+        init3DBackground();
+        updateGameTimerDisplay();
+        renderKuisEmbedCards(localKuisEmbed);
+        applyProfilePhoto();
+        updateProgressUI();
+
+        // Membungkus fetch cloud dengan try-catch agar tidak memutus eksekusi kode selanjutnya jika offline
+        try {
+          fetchRemoteData();
+        } catch (err) {
+          console.error("Cloud sinkronisasi dilewati (Mode lokal aktif):", err);
+        }
+
+        // Memastikan tirai loading layar PASTI hilang dalam 1.2 detik demi menghindari kondisi stuck
+        setTimeout(() => {
+          const overlay = document.getElementById("loading-overlay");
+          if (overlay) {
+            overlay.style.opacity = "0";
+            setTimeout(() => overlay.style.display = "none", 500);
+          }
+        }, 1200);
+      };
+
+      function updateGameTimerDisplay() {
+        document.getElementById("game-timer-display").innerText = "00:00";
+      }
+
+      document.addEventListener("keydown", e => {
+        if (e.key === "F11") { e.preventDefault(); toggleFullscreen(); }
+      });
+    </script>
+  </body>
+</html>
